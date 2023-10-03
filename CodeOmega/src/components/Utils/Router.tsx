@@ -9,6 +9,8 @@ import AboutUs from '../AboutUs/Core'
 import ContactUs from '../ContactUs/ContactUs'
 // import Dashboard from '../Dashboard/Dashboard';
 import Dashboard from '../Dashboard/Projects';
+import VideoCall from '../VideoCall/VideoCall';
+import RoomPage from '../VideoCall/RoomPage';
 const RoutesConfig = () => {
   return (
     <Routes>
@@ -17,9 +19,10 @@ const RoutesConfig = () => {
       <Route path="/Dashboard" element={<Dashboard/>} />
       {/* <Route path="/ML" element={<Core />} />
       <Route path="/OpenCV" element={<EventsTimeline />} />
-      <Route path="/Quiz" element={<EventsTimeline />} />
-      <Route path="/VideoCall" element={<EventsTimeline />} />
-      <Route path="/Forums" element={<ResearchPaper />} /> */}
+      <Route path="/Quiz" element={<EventsTimeline />} /> */}
+      <Route path="/VideoCall" element={<VideoCall />} />
+      <Route path="/room/:roomId" element={<RoomPage />} />
+      {/* <Route path="/Forums" element={<ResearchPaper />} /> */}
       <Route path="/AboutUs" element={<AboutUs />} />
       <Route path="/ContactUs" element={<ContactUs />} />
     </Routes>
