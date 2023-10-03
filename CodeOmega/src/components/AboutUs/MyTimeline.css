@@ -1,0 +1,42 @@
+/* MyTimeline.css */
+
+.vertical-timeline-element--work {
+  
+    opacity: 0; /* Start with opacity set to 0 (invisible) */
+    transition: opacity 0.5s ease-in-out; /* Add a fade-in transition */
+  }
+  
+  .vertical-timeline-element--work.animate {
+    opacity: 1; /* When the "animate" class is applied, make it fully visible */
+  }
+
+.event {
+
+  display: flex;
+  align-items: center;
+  gap: 5%;
+  color: #1a365d;
+}
+
+.event img {
+  width: 30vw;
+  height: auto;
+}
+
+.vertical-timeline::before {
+  background: #1a365d;
+  
+}
+
+.vertical-timeline-element-title{
+  font-weight: bold;
+  font-size: 30;
+  color: #1a365d;
+}
+.vertical-timeline-element-description{
+  color: #1a365d;
+}
+.vertical-timeline-element-icon {
+  background: #1a365d;
+  box-shadow: none;
+}

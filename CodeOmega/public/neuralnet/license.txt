@@ -1,0 +1,11 @@
+Model Information:
+* title:	Neural Networks of the Brain
+* source:	https://sketchfab.com/3d-models/neural-networks-of-the-brain-fa48173d4532407c9c2a4ba06a9bcd2d
+* author:	Universal Design for Learning (https://sketchfab.com/UDL)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Neural Networks of the Brain" (https://sketchfab.com/3d-models/neural-networks-of-the-brain-fa48173d4532407c9c2a4ba06a9bcd2d) by Universal Design for Learning (https://sketchfab.com/UDL) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
