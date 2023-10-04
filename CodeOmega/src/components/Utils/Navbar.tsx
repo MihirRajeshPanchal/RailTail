@@ -78,6 +78,9 @@ export default function Simple() {
                   <NavLink key="Crime Detetction">
                     <Link to="/crimedetection">Crime Detection</Link>
                   </NavLink>
+                  <NavLink key="Video Meet">
+                    <Link to="/videocall">Video Call</Link>
+                  </NavLink>
                   <NavLink key="Staff Allocation">
                     <Link to="/staffallocation">Staff Allocation</Link>
                   </NavLink>
@@ -136,6 +139,9 @@ export default function Simple() {
                   </NavLink>
                   <NavLink key="Crime Detetction">
                     <Link to="/crimedetection">Crime Detection</Link>
+                  </NavLink>
+                  <NavLink key="Video Meet">
+                    <Link to="/videocall">Video Call</Link>
                   </NavLink>
                   <NavLink key="Staff Allocation">
                     <Link to="/staffallocation">Staff Allocation</Link>

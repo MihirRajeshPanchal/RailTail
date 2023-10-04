@@ -19,6 +19,7 @@ import {
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { BsGithub, BsSliders2Vertical, BsFillTrainFreightFrontFill, BsTwitter } from 'react-icons/bs'
 import { MdEmail, MdOutlineEmail } from 'react-icons/md'
@@ -55,8 +56,9 @@ export default function Cleanliness() {
     });
   };
 
-
+  const toast = useToast()
   const handleSubmit = () => {
+    
     fetch(`http://127.0.0.1:5000/add_complaint/cleanliness`, {
       method: 'POST',
       headers: {
@@ -64,6 +66,15 @@ export default function Cleanliness() {
       },
       body: JSON.stringify(formData),
     })
+      .then((e) => {
+        toast({
+          title: 'Cleanliness Complaint',
+          description: "We've have received your complaint.",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        })
+      })
       .catch((error) => {
         console.error('Error toggling assignment:', error);
       });

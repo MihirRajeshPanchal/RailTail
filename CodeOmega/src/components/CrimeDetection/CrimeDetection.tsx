@@ -15,8 +15,46 @@ import { Link } from 'react-router-dom';
 import video from "../../assets/video.jpeg"
 import image from "../../assets/image.png"
 import live from "../../assets/live.png"
+import { useRef } from 'react';
+import React from 'react';
 
 export default function CrimeDetection() {
+  const fileInputRef = useRef(null);
+
+  const handleComputeImageClick = () => {
+    // Trigger the file input when the "Compute" button is clicked
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleComputeVideoClick = () => {
+    // Trigger the file input when the "Compute" button is clicked
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleImageFileChange = (event) => {
+    const selectedFile = event.target.files[0]; // Get the selected file
+
+    if (selectedFile) {
+      // Log the file information
+      console.log('Selected Video File:', selectedFile);
+      // You can also perform further actions with the selected file here
+    }
+  };
+
+  const handleVideoFileChange = (event) => {
+    const selectedFile = event.target.files[0]; // Get the selected file
+
+    if (selectedFile) {
+      // Log the file information
+      console.log('Selected Video File:', selectedFile);
+      // You can also perform further actions with the selected file here
+    }
+  };
+
 
   return (
     <>
@@ -87,9 +125,16 @@ export default function CrimeDetection() {
           </Stack>
         </Stack>
         <Center>
-          <Button as={Link} to="/complaintcrimes" colorScheme="green" size="lg" my={5} px={6}>
+          <Button onClick={handleComputeVideoClick}  colorScheme="green" size="lg" my={5} px={6}>
             Compute
           </Button>
+          <input
+            type="file"
+            accept="video/*" // Specify the accepted file types
+            ref={fileInputRef}
+            onChange={handleVideoFileChange} 
+            style={{ display: 'none' }}
+          />
         </Center>
       </Box>
       <Box
@@ -145,9 +190,16 @@ export default function CrimeDetection() {
           </Stack>
         </Stack>
         <Center>
-          <Button as={Link} to="/complaintcleanliness" colorScheme="green" size="lg" my={5} px={6}>
+          <Button onClick={handleComputeImageClick} colorScheme="green" size="lg" my={5} px={6}>
               Compute
           </Button>
+          <input
+            type="file"
+            accept="image/*" // Specify the accepted file types
+            ref={fileInputRef}
+            onChange={handleImageFileChange} 
+            style={{ display: 'none' }}
+          />
         </Center>
       </Box>
       <Box
@@ -203,7 +255,7 @@ export default function CrimeDetection() {
           </Stack>
         </Stack>
         <Center>
-          <Button as={Link} to="/complaintcleanliness" colorScheme="green" size="lg" my={5} px={6}>
+          <Button as={Link} to="/api_live wala" colorScheme="green" size="lg" my={5} px={6}>
               Compute
           </Button>
         </Center>
