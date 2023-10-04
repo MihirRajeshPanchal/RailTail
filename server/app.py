@@ -742,5 +742,16 @@ def get_clean_complaints():
     # Serialize the data to JSON and send it as a response
     return jsonify(complaints)    
 
+@app.route("/get_tc", methods=["GET"])
+def get_tc():
+    # Fetch all documents from the "complaints" collection
+    complaints_collection = MongoDB('tc')
+    complaints = list(complaints_collection.find({}))
+    for complaint in complaints:
+        complaint['_id'] = str(complaint['_id'])
+    print(complaints)
+    # Serialize the data to JSON and send it as a response
+    return jsonify(complaints) 
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
