@@ -5,6 +5,7 @@ import os
 from pymongo import MongoClient
 import cv2
 import ultralytics
+from ultralytics import YOLO
 
 load_dotenv()
 
@@ -32,13 +33,13 @@ def generate_video():
         # processed_frame = apply_machine_learning_model(frame)
 
         # Encode the processed frame as JPEG
-        _, buffer = cv2.imencode('.jpg', processed_frame)
-        frame_bytes = buffer.tobytes()
+    #     _, buffer = cv2.imencode('.jpg', processed_frame)
+    #     frame_bytes = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+    #     yield (b'--frame\r\n'
+    #            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-    screen_capture.release()
+    # screen_capture.release()
     cv2.destroyAllWindows()
 
 class CrowdSchema:
@@ -408,10 +409,23 @@ def video_trash():
     if 'file' not in request.files:
         return "No video file provided", 400
     video_file = request.files['file']
-    ultralytics.checks()
-    from ultralytics import YOLO
-    model = YOLO('yolov8n.pt')
-    result = model(video_file)
+    model = YOLO('garbage_detector_2.pt')
+    # results = model(source=video_file, stream=True, save=True)
+    cap = cv2.VideoCapture(video_file)
+
+    while cap.isOpened():
+        success, frame = cap.read()
+        if success:
+            result = model(frame, stream=True)
+            annotated_frame = result[0].plot()
+            cv2.imshow("YOLOv8 Inference", annotated_frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+        else:
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
     return "done"
 
 
