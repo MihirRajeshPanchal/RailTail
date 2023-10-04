@@ -307,15 +307,15 @@ def create_police_member():
             return jsonify({"error": str(e)}), 400
 
 
-@app.route("/add_complaint", methods=["POST"])
-def add_complaint():
+@app.route("/add_complaint/<type>", methods=["POST"])
+def add_complaint(type):
     if request.method == "POST":
         try:
             # Parse the JSON data from the request
             data = request.json
 
             # Extract the required fields from the JSON data
-            complaint_type = data["type"]
+            complaint_type = type
             station = data["station"]
             line = data["line"]
             description=data["description"]
