@@ -377,7 +377,7 @@ def add_complaint(type):
             complaint = {
                 "type": complaint_type,
                 "station": station,
-                "line": line,
+                "platform": line,
                 "description": description,
             }
             complaints_collection = MongoDB('complaints')
@@ -533,7 +533,7 @@ def apply_machine_learning_model(model_path,frame,t):
 
 @app.route("/video-trash",methods=['GET'])
 def video_trash():
-    # video_file = request.files['file']
+    video_file = request.files['file']
     video_file = "garbage4.mp4"
     model_path = 'garbage_detector_1.pt'
     cnt=0
@@ -544,7 +544,6 @@ def video_trash():
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
     fps = int(cap.get(5))
-    print("FPPPSSSSS:::::::::::::::::::::::::::",fps)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     output_video = cv2.VideoWriter('output_video.mp4', fourcc, 15, (frame_width, frame_height))
 
@@ -569,11 +568,18 @@ def video_trash():
         c1 += 1
     # video_save()        
     cap.release()
-
     output_video.release()
     cv2.destroyAllWindows()
-    
-    
+
+    if t:
+        complaint = {
+                "type": "cleanliness",
+                "station": "Dadar",
+                "platform": "2",
+                "description": "Urgent assistance needed in Cleanliness",
+            }
+        complaints_collection = MongoDB('complaints')
+        result = complaints_collection.insert_one(complaint)
     return "done"
 
 
