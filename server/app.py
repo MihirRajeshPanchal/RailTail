@@ -18,6 +18,58 @@ def MongoDB(collection_name):
     collection = db.get_collection(collection_name)
     return collection
 
+
+
+def apply_machine_learning_model():
+    from ultralytics import YOLO
+    model = YOLO('yolov8l.pt')
+    results=model('/content/crowd_ss.png')
+    l=[]
+    for result in results:
+        l.append(result.tojson())
+
+    import json
+
+    # Your list of dictionaries as a string within a list
+    data_str = l 
+    # Parse the string into a Python list
+    data_list = json.loads(data_str[0])
+    # Save the list to a JSON file
+    with open('output.json', 'w') as json_file:
+        json.dump(data_list, json_file, indent=4)
+    # Optionally, you can print the saved JSON data
+    with open('output.json', 'r') as json_file:
+        saved_data = json.load(json_file)
+        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
+
+    def calculate_cleanliness_percentage(data):
+        total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
+        trash_count = 0
+
+        for prediction in data:
+            x1, y1, x2, y2, confidence = (
+                prediction['box']['x1'],
+                prediction['box']['y1'],
+                prediction['box']['x2'],
+                prediction['box']['y2'],
+                prediction['confidence']
+            )
+
+            # Calculate dynamic object size based on position
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (1920 * 1080)  # Assuming frame size is 1920x1080
+            trash_count += 1 - normalized_area  # Subtract normalized area from 1
+
+        # Calculate cleanliness percentage
+        cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
+        return cleanliness_percentage
+
+    # Example usage with saved_data
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
+    print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
+    proc_frame=results[0].plot()
+    return proc_frame, cleanliness_percentage
+
+
 def generate_video():
     # Create a VideoCapture object to capture the screen
     screen_capture = cv2.VideoCapture(0)  # Change the index to capture a specific screen if necessary
@@ -29,7 +81,7 @@ def generate_video():
 
         # Here, you can apply your machine learning model to process each frame
         # Replace the following line with your model processing logic
-        # processed_frame = apply_machine_learning_model(frame)
+        processed_frame, cleanliness = apply_machine_learning_model(frame)
 
         # Encode the processed frame as JPEG
         _, buffer = cv2.imencode('.jpg', processed_frame)
