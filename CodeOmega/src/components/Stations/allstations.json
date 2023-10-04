@@ -1,17 +1,4 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Input,
-  Card,
-  CardBody,
-  Heading,
-  Stack,
-  Text,
-  Center,
-  Container,
-} from '@chakra-ui/react';
-
-const stationData = [
+[
   {
     "name": "Churchgate",
     "code": "CCG",
@@ -1628,76 +1615,4 @@ const stationData = [
     "tracks": NaN,
     "yearOfOpening": 1907.0
   }
-];
-
-export default function Stations() {
-  const [search, setSearch] = useState('');
-
-  const filteredStations = stationData.filter((station) =>
-    station.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  return (
-    <>
-    <Container>
-      <Center>
-    <Heading
-              fontSize={{
-                base: '4xl',
-                md: '3xl',
-              }}>
-              Search Stations :         
-    </Heading>
-        <Box mt={4} mb={4}>
-          <Input
-            mx={4}
-            placeholder="Search Stations"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </Box>
-      </Center>
-      </Container>
-      <Stack spacing={4}>
-      <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '1rem',
-          }}>
-        {filteredStations.map((station, index) => (
-          <Card
-            maxW="1400px"
-            borderWidth="1px"
-            borderRadius="lg"
-            overflow="hidden"
-            boxShadow="md"
-            key={station.number}
-          >
-            <CardBody p={4}>
-              <Heading fontSize="xl" mb={2}>
-                {station.name}
-              </Heading>
-              <Text fontSize="sm" mb={2}>
-                Station Code: {station.code}
-              </Text>
-              <Text fontSize="sm" mb={2}>
-                Line: {station.line}
-              </Text>
-              <Text fontSize="sm" mb={2}>
-                Platforms: {station.platforms}
-              </Text>
-              <Text fontSize="sm" mb={2}>
-                Tracks: {station.tracks}
-              </Text>
-              <Text fontSize="sm" mb={2}>
-                Year of Opening: {station.yearOfOpening}
-              </Text>
-            </CardBody>
-          </Card>
-        ))}
-        </div>
-      </Stack>
-      </>
-  );
-}
+]
