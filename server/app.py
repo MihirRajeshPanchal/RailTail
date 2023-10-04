@@ -622,32 +622,57 @@ def threat_detector_image():
     print("Response",response)
     return jsonify(response)
 
-@app.route("/upload-threat-video", methods=['GET'])
+@app.route("/upload-threat-video", methods=['POST'])
 def threat_detector_video():
-    video_file = "garbage4.mp4"
+    print("Now make frames!!")
+    video_file = request.files['file']
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
     cnt = 0
     c1 = 0
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
-    project = rf.workspace().project("fire-smoke-detection-eozii")
-    model = project.version(1).model
-    cap = cv2.VideoCapture(video_file)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    cap = cv2.VideoCapture(file_path)
     
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
-            # If success is False, there are no more frames to read, so break out of the loop
             break
         
         if c1 % 20 == 0:
             print("Frame:", c1)
             resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
-            jpeg_quality = 95
-            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+            cv2.imwrite('crowd_frames/'+str(cnt)+'.jpg',resized_frame)
+            # success = cv2.imwrite(output_path, resized_frame)
+            model.predict('crowd_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crowd_frames/'+str(cnt)+'.jpg')    
+            cnt += 1
+            c1+=1
+        else:
+            c1 +=1
+    
+    print("Now make video!!")
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('crowd_frames/*jpg'):
+        print(file_n)
+        file_n = int(file_n.split('\\')[1].split('.')[0])
+        file_list.append(file_n)
 
-            if success:
-                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
-                cnt += 1
-        c1 += 1
+    file_list.sort(key=int)
+    print("file list:-",file_list)
+    for filename in file_list:
+        img = cv2.imread('crowd_frames/'+str(filename)+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter("../CodeOmega/src/components/ThreatDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
     cap.release()
     return "done"
 
@@ -667,6 +692,7 @@ def crowd_detector_image():
 
 @app.route("/upload-crowd-video", methods=['POST'])
 def crowd_detector_video():
+    print("Now make frames!!")
     video_file = request.files['file']
     file_path = os.path.join('video', video_file.filename)
     video_file.save(file_path)
@@ -682,16 +708,93 @@ def crowd_detector_video():
         if not success:
             break
         
-        if c1 % 20 == 0:
+        if c1 % 10 == 0:
             print("Frame:", c1)
             resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
-            jpeg_quality = 95
-            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+            cv2.imwrite('crowd_frames/'+str(cnt)+'.jpg',resized_frame)
+            # success = cv2.imwrite(output_path, resized_frame)
+            model.predict('crowd_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crowd_frames/'+str(cnt)+'.jpg')    
+            cnt += 1
+            c1+=1
+        else:
+            c1 +=1
+    
+    print("Now make video!!")
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('crowd_frames/*jpg'):
+        print(file_n)
+        file_n = int(file_n.split('\\')[1].split('.')[0])
+        file_list.append(file_n)
 
-            if success:
-                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
-                cnt += 1
-        c1 += 1
+    file_list.sort(key=int)
+    print("file list:-",file_list)
+    for filename in file_list:
+        img = cv2.imread('crowd_frames/'+str(filename)+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter("../CodeOmega/src/components/CrowdDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    cap.release()
+    return "done"
+
+@app.route("/upload-crime-video", methods=['POST'])
+def crime_detector_video():
+    print("Now make frames!!")
+    video_file = request.files['file']
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
+    cnt = 0
+    c1 = 0
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("dbss_smoking")
+    model = project.version(1).model
+    cap = cv2.VideoCapture(file_path)
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            break
+        
+        if c1 % 10 == 0:
+            print("Frame:", c1)
+            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
+            cv2.imwrite('crime_frames/'+str(cnt)+'.jpg',resized_frame)
+            # success = cv2.imwrite(output_path, resized_frame)
+            model.predict('crime_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crime_frames/'+str(cnt)+'.jpg')    
+            cnt += 1
+            c1+=1
+        else:
+            c1 +=1
+    
+    print("Now make video!!")
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('crime_frames/*jpg'):
+        print(file_n)
+        file_n = int(file_n.split('\\')[1].split('.')[0])
+        file_list.append(file_n)
+
+    file_list.sort(key=int)
+    print("file list:-",file_list)
+    for filename in file_list:
+        img = cv2.imread('crime_frames/'+str(filename)+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter("../CodeOmega/src/components/CrimeDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
     cap.release()
     return "done"
 
