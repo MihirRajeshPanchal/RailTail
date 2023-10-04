@@ -9,12 +9,15 @@ import ultralytics
 from ultralytics import YOLO
 import json
 import glob
+from roboflow import Roboflow
+
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 passw = os.getenv("MONGO_PASS")
+ROBOFLOW_API_KEY = os.getenv("ROBOFLOW_API_KEY")
 connection_string = f"mongodb+srv://codeomega:{passw}@cluster0.hnyk6mi.mongodb.net/?retryWrites=true&w=majority"
 def MongoDB(collection_name):
     client = MongoClient(connection_string)
@@ -485,7 +488,7 @@ def apply_machine_learning_model(model_path,frame):
     return proc_frame
 
 
-@app.route("/video-trash",methods=['GET'])
+@app.route("/upload-garbage-video",methods=['GET'])
 def video_trash():
     # video_file = request.files['file']
     video_file = "garbage4.mp4"
@@ -493,30 +496,106 @@ def video_trash():
     cnt=0
     c1=0
     cap = cv2.VideoCapture(video_file)
-    # while cap.isOpened():
-    #     success, frame = cap.read()
-    #     if c1%5==0:
-    #         print(c1)
-    #         if success:
-    #             frame=cv2.resize(frame,(320,320))
-    #             ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
-    #             cv2.imshow("YOLOv8 Inference", ann_frame)
-    #             cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
-    #             cnt+=1
-    #             if cv2.waitKey(1) & 0xFF == ord("q"):
-    #                 break
-    #         else:
-    #             break
-    #     else:
-    #         pass
-    #     c1 += 1
+    while cap.isOpened():
+        success, frame = cap.read()
+        if c1%5==0:
+            print(c1)
+            if success:
+                frame=cv2.resize(frame,(320,320))
+                ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
+                cv2.imshow("YOLOv8 Inference", ann_frame)
+                cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                cnt+=1
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
+            else:
+                break
+        else:
+            pass
+        c1 += 1
     video_save()        
     cap.release()
     cv2.destroyAllWindows()
     
+    return "done"
+
+@app.route("/upload-threat-image", methods=['GET'])
+def threat_detector_image():
+    image_file = "garbage4.jpg"
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("fire-smoke-detection-eozii")
+    model = project.version(1).model
+    print(model.predict(image_file, confidence=40, overlap=30).json())
     
     return "done"
 
+@app.route("/upload-threat-video", methods=['GET'])
+def threat_detector_video():
+    video_file = "garbage4.mp4"
+    cnt = 0
+    c1 = 0
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("fire-smoke-detection-eozii")
+    model = project.version(1).model
+    cap = cv2.VideoCapture(video_file)
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            # If success is False, there are no more frames to read, so break out of the loop
+            break
+        
+        if c1 % 20 == 0:
+            print("Frame:", c1)
+            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
+            jpeg_quality = 95
+            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+
+            if success:
+                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
+                cnt += 1
+        c1 += 1
+    cap.release()
+    return "done"
+
+@app.route("/upload-crowd-image", methods=['GET'])
+def crowd_detector_image():
+    image_file = "garbage4.jpg"
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    print(model.predict(image_file, confidence=40, overlap=30).json())
+    
+    return "done"
+
+@app.route("/upload-crowd-video", methods=['GET'])
+def crowd_detector_video():
+    video_file = "garbage4.mp4"
+    cnt = 0
+    c1 = 0
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    cap = cv2.VideoCapture(video_file)
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+
+            break
+        
+        if c1 % 20 == 0:
+            print("Frame:", c1)
+            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
+            jpeg_quality = 95
+            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+
+            if success:
+                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
+                cnt += 1
+        c1 += 1
+    cap.release()
+    return "done"
 
 @app.route("/live-video")
 def live_video():
