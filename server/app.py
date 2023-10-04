@@ -20,10 +20,10 @@ def MongoDB(collection_name):
 
 
 
-def apply_machine_learning_model():
+def apply_machine_learning_model(model,frame):
     from ultralytics import YOLO
-    model = YOLO('yolov8l.pt')
-    results=model('/content/crowd_ss.png')
+    # model = YOLO('yolov8l.pt')
+    results=model(frame)
     l=[]
     for result in results:
         l.append(result.tojson())
@@ -81,7 +81,7 @@ def generate_video():
 
         # Here, you can apply your machine learning model to process each frame
         # Replace the following line with your model processing logic
-        processed_frame, cleanliness = apply_machine_learning_model(frame)
+        processed_frame, cleanliness = apply_machine_learning_model(model,frame)
 
         # Encode the processed frame as JPEG
         _, buffer = cv2.imencode('.jpg', processed_frame)
