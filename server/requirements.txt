@@ -2,3 +2,5 @@ flask
 python-dotenv
 pymongo
 flask_cors
+opencv-python
+ultralytics
