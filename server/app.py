@@ -551,7 +551,28 @@ def perform_sentiment_analysis():
     else:
         return "Please provide text in the 'text' query parameter."
 
-    
+
+@app.route("/get_crime_complaints", methods=["GET"])
+def get_complaints():
+    # Fetch all documents from the "complaints" collection
+    complaints_collection = MongoDB('complaints')
+    complaints = list(complaints_collection.find({"type": "crime"}))
+    for complaint in complaints:
+        complaint['_id'] = str(complaint['_id'])
+    print(complaints)
+    # Serialize the data to JSON and send it as a response
+    return jsonify(complaints) 
+
+@app.route("/get_clean_complaints", methods=["GET"])
+def get_complaints():
+    # Fetch all documents from the "complaints" collection
+    complaints_collection = MongoDB('complaints')
+    complaints = list(complaints_collection.find({"type": "cleanliness"}))
+    for complaint in complaints:
+        complaint['_id'] = str(complaint['_id'])
+    print(complaints)
+    # Serialize the data to JSON and send it as a response
+    return jsonify(complaints)    
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
