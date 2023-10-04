@@ -21,14 +21,18 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
+  useDisclosure,
+  Collapse,
 } from '@chakra-ui/react';
 import { BsTelephone, BsMailbox } from 'react-icons/bs';
 import staffimg from "../../assets/staff.png";
-
+import { ImCross, ImCheckmark } from 'react-icons/im'
 export default function Staffallocation() {
   const [dataArray, setDataArray] = useState([]);
+  const [notificationArray, setNotificationArray] = useState([]);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [platformNumber, setPlatformNumber] = useState('');
+  const { isOpen, onToggle } = useDisclosure()
   const [selectedMemberId, setSelectedMemberId] = useState(null);
 
   const openAssignModal = (memberId) => {
@@ -76,10 +80,83 @@ export default function Staffallocation() {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
+      
+    fetch('http://127.0.0.1:5000/get_clean_complaints')
+    .then((response) => {
+      if (!response.ok) {
+        console.log('Network response was not ok');
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setNotificationArray(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error);
+    });
   }, []);
 
   return (
     <>
+          <Center>
+        <Heading
+          px={{ base: 6, md: 150 }}
+          pb={10}
+          paddingTop={10}
+          fontWeight={'normal'}
+          fontSize={{ base: '3xl', sm: '2xl', md: '3xl' }}
+          lineHeight={'110%'}
+          textAlign="center"
+        >
+          Notifications
+        </Heading>
+      </Center>
+      <Center>
+        <Button onClick={onToggle}>Click Me</Button>
+      </Center>
+      {notificationArray.map((data, index) => (
+        <div key={index}>
+          <Collapse in={isOpen} animateOpacity>
+            <Box
+              p='40px'
+              mx={50}
+              color='white'
+              mt='4'
+              bg='teal.500'
+              rounded='md'
+              shadow='md'
+            >
+              <div>Station Name: {data.station}</div>
+              <div>Platform Number: {data.platform}</div>
+              <div>Description: {data.description}</div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+                <IconButton
+                    my={-70}
+                    mx={30}
+                    isRound={true}
+                    variant='solid'
+                    colorScheme='teal'
+                    aria-label='Done'
+                    fontSize='20px'
+                    icon={<ImCheckmark />}
+                  />
+                <IconButton
+                    my={-70}
+                    mx={30}
+                    isRound={true}
+                    variant='solid'
+                    colorScheme='teal'
+                    aria-label='Done'
+                    fontSize='20px'
+                    icon={<ImCross />}
+                  />
+              </div>
+            </Box>
+          </Collapse>
+        </div>
+      ))}
       <Center>
         <Heading
           px={{ base: 6, md: 150 }}

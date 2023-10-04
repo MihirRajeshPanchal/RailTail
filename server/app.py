@@ -541,23 +541,30 @@ def garbage_detector_image():
     results = model(image_file, stream=True, save=True)
     proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=image_file)
 
-@app.route("/upload-garbage-video",methods=['GET'])
-def garbage_detector_video():
-    # video_file = request.files['file']
-    video_file = "garbage4.mp4"
+@app.route("/upload-garbage-video",methods=['POST'])
+def video_trash():
+    video_file = request.files['file']
+    print("Tpe of file",type(video_file))
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
     cap = cv2.VideoCapture(video_file)
+    t=False
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+    fps = int(cap.get(5))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_video = cv2.VideoWriter('output_video.mp4', fourcc, 15, (frame_width, frame_height))
     while cap.isOpened():
         success, frame = cap.read()
         if c1%5==0:
             print(c1)
             if success:
-                frame=cv2.resize(frame,(320,320))
-                ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
+                # frame=cv2.resize(frame,(320,320))
+                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
                 cv2.imshow("YOLOv8 Inference", ann_frame)
-                cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                output_video.write(ann_frame)
                 cnt+=1
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
@@ -585,15 +592,16 @@ def garbage_detector_video():
 @app.route("/upload-threat-image", methods=['GET'])
 def threat_detector_image():
     image_file = request.files['file']
-    # Check if the file has a name
-    if image_file.filename == '':
-        return "No selected file"
+    file_path = os.path.join('img', image_file.filename)
+    image_file.save(file_path)
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("fire-smoke-detection-eozii")
     model = project.version(1).model
-    print(model.predict(image_file, confidence=40, overlap=30).json())
-    
-    return "done"
+    # print(model.predict(image_file, confidence=40, overlap=30).json())
+    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/threat_prediction.jpg')
+    response = {"image": "success"}
+    print("Response",response)
+    return jsonify(response)
 
 @app.route("/upload-threat-video", methods=['GET'])
 def threat_detector_video():
@@ -624,30 +632,40 @@ def threat_detector_video():
     cap.release()
     return "done"
 
-@app.route("/upload-crowd-image", methods=['GET'])
+@app.route("/upload-crowd-image", methods=['POST'])
 def crowd_detector_image():
     image_file = request.files['file']
+    file_path = os.path.join('img', image_file.filename)
+    image_file.save(file_path)
     # Check if the file has a name
-    if image_file.filename == '':
-        return "No selected file"
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
+<<<<<<< HEAD
+    # print(model.predict(file_path, confidence=40, overlap=30).json())
+    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
+    response = {"image": "success"}
+    print("Response",response)
+    return jsonify(response)
+=======
     results = model.predict(image_file, confidence=40, overlap=30).json()
     print(results)
     print('NUMBER OF PEOPLE:', len(results['predictions']))
     
     return "done"
+>>>>>>> 15123624e7e7bee3b55782052c9009f0cf992014
 
-@app.route("/upload-crowd-video", methods=['GET'])
+@app.route("/upload-crowd-video", methods=['POST'])
 def crowd_detector_video():
-    video_file = "garbage4.mp4"
+    video_file = request.files['file']
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
     cnt = 0
     c1 = 0
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
-    cap = cv2.VideoCapture(video_file)
+    cap = cv2.VideoCapture(file_path)
     
     while cap.isOpened():
         success, frame = cap.read()
