@@ -479,8 +479,8 @@ def video_save():
     out.release()
 
 
-def apply_machine_learning_model(model_path,frame):
-    t=False
+def apply_machine_learning_model(model_path,frame,t):
+    
     model = YOLO(model_path)
     results=model(frame)
     l=[]
@@ -539,6 +539,7 @@ def video_trash():
     cnt=0
     c1=0
     cap = cv2.VideoCapture(video_file)
+    t=False
 
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
@@ -554,7 +555,7 @@ def video_trash():
             print(c1)
             if success:
                 # frame=cv2.resize(frame,(320,320))
-                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame)
+                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
                 cv2.imshow("YOLOv8 Inference", ann_frame)
                 # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
                 output_video.write(ann_frame)
