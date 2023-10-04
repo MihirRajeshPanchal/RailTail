@@ -26,6 +26,7 @@ import ContactUs from '../ContactUs/ContactUs'
 import CrowdDetection from '../CrowdDetection/CrowdDetection'
 import TrashDetection from '../TrashDetection/TrashDetection';
 import CrimeDetection from '../CrimeDetection/CrimeDetection';
+import TCAllocation from '../TCAllocation/TCAllocation'
 import StaffAllocation from '../StaffAllocation/StaffAllocation';
 import PoliceAllocation from '../PoliceAllocation/PoliceAllocation';
 const RoutesConfig = () => {
@@ -50,6 +51,7 @@ const RoutesConfig = () => {
       <Route path="/crowddetection" element={<CrowdDetection/>} />
       <Route path="/trashdetection" element={<TrashDetection/>} />
       <Route path="/crimedetection" element={<CrimeDetection/>} />
+      <Route path="/tcallocation" element={<TCAllocation/>} />
       <Route path="/staffallocation" element={<StaffAllocation/>} />
       <Route path="/policeallocation" element={<PoliceAllocation/>} />
 
