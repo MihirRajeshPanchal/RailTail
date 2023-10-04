@@ -6,6 +6,8 @@ import Homepage from '../Home/Homepage';
 // user 
 import Dashboard from '../Dashboard/Projects';
 import Complaint from '../Complaint/Complaint';
+import Crime from '../Complaint/Crime';
+import Cleanliness from '../Complaint/Cleanliness';
 import FeedBack from '../FeedBack/FeedBack';
 import Stations from '../Stations/Stations';
 import Forums from '../Forums/Forums';
@@ -35,6 +37,8 @@ const RoutesConfig = () => {
       {/* user  */}
       <Route path="/stations" element={<Stations/>} />
       <Route path="/complain" element={<Complaint/>} />
+      <Route path="/complaintcrimes" element={<Crime/>} />
+      <Route path="/complaintcleanliness" element={<Cleanliness/>} />
       <Route path="/feedback" element={<FeedBack/>} />
       <Route path="/forums" element={<Forums/>} />
       <Route path="/aboutus" element={<AboutUs />} />
