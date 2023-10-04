@@ -10,7 +10,7 @@ passw = os.getenv("MONGO_PASS")
 connection_string = f"mongodb+srv://codeomega:{passw}@cluster0.hnyk6mi.mongodb.net/?retryWrites=true&w=majority"
 def MongoDB(collection_name):
     client = MongoClient(connection_string)
-    db = client.get_database('SIH')
+    db = client.get_database('TSEC')
     collection = db.get_collection(collection_name)
     return collection
 
