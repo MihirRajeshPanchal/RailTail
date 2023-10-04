@@ -22,8 +22,8 @@ const Train = ({ isMobile }) => {
       <primitive
         object={train.scene}
         scale={isMobile ? 1.2 : 1.65}
-        position={isMobile ? [0, -2, 0] : [0, -3, 0]}
-        rotation={[-0.01, 1.9, -0.1]}
+        position={isMobile ? [0, -2, 0] : [2, -3.5, 0]}
+        rotation={[0, 1.9, 0]}
       />
       {/* Additional Directional Light */}
       <directionalLight
