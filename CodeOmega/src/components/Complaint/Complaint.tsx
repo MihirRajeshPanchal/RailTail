@@ -17,6 +17,7 @@ const IMAGE =
   'https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80'
 
 export default function ProductSimple() {
+
   return (
     <>
     <Center>
@@ -48,7 +49,7 @@ export default function ProductSimple() {
           rounded={'lg'}
           mt={-12}
           pos={'relative'}
-          height={'230px'}
+          height={'270px'}
           _after={{
             transition: 'all .3s ease',
             content: '""',
@@ -72,7 +73,7 @@ export default function ProductSimple() {
             Give a Complaint for
           </Text>
           <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            Crimes Complaint
+            Crimes
           </Heading>
           <Stack direction={'row'} align={'center'}>
 
@@ -99,7 +100,7 @@ export default function ProductSimple() {
           rounded={'lg'}
           mt={-12}
           pos={'relative'}
-          height={'230px'}
+          height={'270px'}
           _after={{
             transition: 'all .3s ease',
             content: '""',
@@ -123,7 +124,7 @@ export default function ProductSimple() {
             Give a Complaint for
           </Text>
           <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            Cleanliness Complaint
+            Lack of Cleanliness
           </Heading>
           <Stack direction={'row'} align={'center'}>
 
