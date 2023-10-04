@@ -10,7 +10,7 @@ import {
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { PhoneIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import BrainCanvas from './Brain';
+import TrainCanvas from './Train';
 import { motion } from 'framer-motion'; 
 
 export default function Hero() {
@@ -51,15 +51,15 @@ export default function Hero() {
                   zIndex: -1,
                 }}
               >
-                Code Omega,
+                RailTail,
               </Text>
               <br />
               <Text as={'span'} color={'blue.400'}>
-                Tagline.
+                Transforming Tracks, Empowering Travels
               </Text>
             </Heading>
             <Text color={'gray.500'}>
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum           
+              RailTail is a pioneering initiative designed to revolutionize the Indian Railways experience by seamlessly integrating cutting-edge technology into the heart of one of the world's largest railway networks. Our project is driven by the vision of enhancing safety, efficiency, and passenger satisfaction while effectively addressing the unique challenges posed by the vast scale and complexity of the railway network.
             </Text>
             <Stack spacing={{ base: 4, sm: 6 }} direction={{ base: 'column', sm: 'row' }}>
               <Button
@@ -106,7 +106,7 @@ export default function Hero() {
               width={'full'}
               overflow={'hidden'}
             >
-              <BrainCanvas/>
+              <TrainCanvas/>
             </Box>
           </Flex>
         </Stack>

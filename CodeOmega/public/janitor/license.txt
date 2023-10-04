@@ -1,0 +1,11 @@
+Model Information:
+* title:	Hello Neighbor 2 Janitor
+* source:	https://sketchfab.com/3d-models/hello-neighbor-2-janitor-98a50877e0bc4ea19e3908cb11ac0670
+* author:	irons3th (https://sketchfab.com/irons3th)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Hello Neighbor 2 Janitor" (https://sketchfab.com/3d-models/hello-neighbor-2-janitor-98a50877e0bc4ea19e3908cb11ac0670) by irons3th (https://sketchfab.com/irons3th) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
