@@ -487,6 +487,7 @@ def apply_machine_learning_model(model_path,frame,t):
     model = YOLO(model_path)
     results=model(frame)
     l=[]
+    w,h= cv2.imread(frame).shape
     for result in results:
         l.append(result.tojson())
 
@@ -502,7 +503,7 @@ def apply_machine_learning_model(model_path,frame,t):
         saved_data = json.load(json_file)
         print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
 
-    def calculate_cleanliness_percentage(data):
+    def calculate_cleanliness_percentage(data,w,h):
         total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
         trash_count = 0
 
@@ -517,8 +518,8 @@ def apply_machine_learning_model(model_path,frame,t):
             if confidence > 70:
                 t=True
             # Calculate dynamic object size based on position
-            normalized_area = ((x2 - x1) * (y2 - y1)) / (320 * 320)  # Assuming frame size is 1920x1080
-            trash_count += normalized_area  # Subtract normalized area from 1
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (w*h)  # Assuming frame size is 1920x1080
+            trash_count +=1- normalized_area  # Subtract normalized area from 1
 
         # Calculate cleanliness percentage
         if total_objects>0 :
@@ -527,28 +528,47 @@ def apply_machine_learning_model(model_path,frame,t):
         else:
             return 0
     # Example usage with saved_data
-    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,w,h)
     print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     # print(cleanliness_percentage)
     proc_frame=results[0].plot()
     return proc_frame,t,cleanliness_percentage
 
-@app.route("/upload-garbage-image",methods=['GET'])
+@app.route("/upload-garbage-image",methods=['POST'])
 def garbage_detector_image():
-    image_file = 'garbage.jpg'
+    image_file = request.files['file']
+    file_path = os.path.join('img', image_file.filename)
+    image_file.save(file_path)
     model_path = 'garbage_detector_1.pt'
     model = YOLO(model_path)
-    results = model(image_file, stream=True, save=True)
-    proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=image_file)
+    t=False
+    results = model(file_path, stream=True, save=True)
+    proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=file_path,t=t)
+    output_path = '../CodeOmega/src/components/TrashDetection/output_image.jpg'  # Specify the path where you want to save the image
+    success = cv2.imwrite(output_path, proc_frame)
+    print("Succes:- ",success)
+    response = {"image": "success"}
+    print("Response",response)
+    if t:
+        complaint = {
+                "type": "cleanliness",
+                "station": "Dadar",
+                "platform": "2",
+                "description": "Urgent assistance needed in Cleanliness",
+            }
+        complaints_collection = MongoDB('complaints')
+        result = complaints_collection.insert_one(complaint)
+    return jsonify(response)
 
 @app.route("/upload-garbage-video",methods=['POST'])
 def video_trash():
     video_file = request.files['file']
-    print("Tpe of file",type(video_file))
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
-    cap = cv2.VideoCapture(video_file)
+    cap = cv2.VideoCapture(file_path)
     t=False
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
@@ -562,12 +582,12 @@ def video_trash():
             if success:
                 # frame=cv2.resize(frame,(320,320))
                 ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
-                cv2.imshow("YOLOv8 Inference", ann_frame)
+                # cv2.imshow("YOLOv8 Inference", ann_frame)
                 # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
                 output_video.write(ann_frame)
                 cnt+=1
-                if cv2.waitKey(1) & 0xFF == ord("q"):
-                    break
+                # if cv2.waitKey(1) & 0xFF == ord("q"):
+                #     break
             else:
                 break
         else:

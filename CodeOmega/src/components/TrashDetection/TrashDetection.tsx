@@ -19,19 +19,21 @@ import { useRef } from 'react';
 import React from 'react';
 
 export default function TrashDetection() {
-  const fileInputRef = useRef(null);
+  const fileInputVideoRef = useRef(null);
+  const fileInputImageRef = useRef(null);
+
 
   const handleComputeImageClick = () => {
     // Trigger the file input when the "Compute" button is clicked
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    if (fileInputImageRef.current) {
+      fileInputImageRef.current.click();
     }
   };
 
   const handleComputeVideoClick = () => {
     // Trigger the file input when the "Compute" button is clicked
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    if (fileInputVideoRef.current) {
+      fileInputVideoRef.current.click();
     }
   };
 
@@ -44,7 +46,7 @@ export default function TrashDetection() {
       formData.append('file', selectedFile);
       console.log(selectedFile)
       // Make a POST request to your server API to process the image
-      fetch('http://127.0.0.1:5000/upload-garbage-video', {
+      fetch('http://127.0.0.1:5000/upload-garbage-image', {
         method: 'POST',
         body: formData,
       })
@@ -64,9 +66,23 @@ export default function TrashDetection() {
     const selectedFile = event.target.files[0]; // Get the selected file
 
     if (selectedFile) {
-      // Log the file information
-      console.log('Selected Video File:', selectedFile);
-      // You can also perform further actions with the selected file here
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      console.log(selectedFile)
+      // Make a POST request to your server API to process the image
+      fetch('http://127.0.0.1:5000/upload-garbage-video', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Response from server:', data);
+          // Handle the response data as needed
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          // Handle errors
+        });
     }
   };
 
@@ -146,7 +162,7 @@ export default function TrashDetection() {
           <input
             type="file"
             accept="video/*" // Specify the accepted file types
-            ref={fileInputRef}
+            ref={fileInputVideoRef}
             onChange={handleVideoFileChange} 
             style={{ display: 'none' }}
           />
@@ -211,7 +227,7 @@ export default function TrashDetection() {
           <input
             type="file"
             accept="image/*" // Specify the accepted file types
-            ref={fileInputRef}
+            ref={fileInputImageRef}
             onChange={handleImageFileChange} 
             style={{ display: 'none' }}
           />
