@@ -533,6 +533,13 @@ def apply_machine_learning_model(model_path,frame,t):
     proc_frame=results[0].plot()
     return proc_frame,t,cleanliness_percentage
 
+@app.route("/upload-garbage-image",methods=['GET'])
+def garbage_detector_image():
+    image_file = 'garbage.jpg'
+    model_path = 'garbage_detector_1.pt'
+    model = YOLO(model_path)
+    results = model(image_file, stream=True, save=True)
+    proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=image_file)
 
 @app.route("/upload-garbage-video",methods=['POST'])
 def video_trash():
@@ -634,11 +641,19 @@ def crowd_detector_image():
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
+<<<<<<< HEAD
     # print(model.predict(file_path, confidence=40, overlap=30).json())
     model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
     response = {"image": "success"}
     print("Response",response)
     return jsonify(response)
+=======
+    results = model.predict(image_file, confidence=40, overlap=30).json()
+    print(results)
+    print('NUMBER OF PEOPLE:', len(results['predictions']))
+    
+    return "done"
+>>>>>>> 15123624e7e7bee3b55782052c9009f0cf992014
 
 @app.route("/upload-crowd-video", methods=['POST'])
 def crowd_detector_video():
