@@ -542,27 +542,25 @@ def video_trash():
     cnt=0
     c1=0
     cap = cv2.VideoCapture(video_file)
-    # while cap.isOpened():
-    #     success, frame = cap.read()
-    #     if c1%5==0:
-    #         print(c1)
-    #         if success:
-    #             frame=cv2.resize(frame,(320,320))
-    #             ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
-    #             cv2.imshow("YOLOv8 Inference", ann_frame)
-    #             cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
-    #             cnt+=1
-    #             if cv2.waitKey(1) & 0xFF == ord("q"):
-    #                 break
-    #         else:
-    #             break
-    #     else:
-    #         pass
-    #     c1 += 1
+    while cap.isOpened():
+        success, frame = cap.read()
+        if c1%5==0:
+            print(c1)
+            if success:
+                frame=cv2.resize(frame,(320,320))
+                ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
+                cv2.imshow("YOLOv8 Inference", ann_frame)
+                cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                cnt+=1
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
+            else:
+                break
+        else:
+            pass
+        c1 += 1
     video_save()        
     cap.release()
-
-    output_video.release()
     cv2.destroyAllWindows()
     
     return "done"
@@ -612,7 +610,9 @@ def crowd_detector_image():
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
-    print(model.predict(image_file, confidence=40, overlap=30).json())
+    results = model.predict(image_file, confidence=40, overlap=30).json()
+    print(results)
+    print('NUMBER OF PEOPLE:', len(results['predictions']))
     
     return "done"
 
