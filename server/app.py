@@ -5,6 +5,8 @@ import os
 from pymongo import MongoClient
 import cv2
 import ultralytics
+from ultralytics import YOLO
+import json
 
 load_dotenv()
 
@@ -17,6 +19,8 @@ def MongoDB(collection_name):
     db = client.get_database('TSEC')
     collection = db.get_collection(collection_name)
     return collection
+
+
 
 def generate_video():
     # Create a VideoCapture object to capture the screen
@@ -32,13 +36,13 @@ def generate_video():
         # processed_frame = apply_machine_learning_model(frame)
 
         # Encode the processed frame as JPEG
-        _, buffer = cv2.imencode('.jpg', processed_frame)
-        frame_bytes = buffer.tobytes()
+    #     _, buffer = cv2.imencode('.jpg', processed_frame)
+    #     frame_bytes = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+    #     yield (b'--frame\r\n'
+    #            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-    screen_capture.release()
+    # screen_capture.release()
     cv2.destroyAllWindows()
 
 class CrowdSchema:
@@ -403,15 +407,76 @@ def get_police():
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
+
+def apply_machine_learning_model(model_path,frame):
+    model = YOLO(model_path)
+    results=model(frame)
+    l=[]
+    for result in results:
+        l.append(result.tojson())
+
+    # Your list of dictionaries as a string within a list
+    data_str = l 
+    # Parse the string into a Python list
+    data_list = json.loads(data_str[0])
+    # Save the list to a JSON file
+    with open('output.json', 'w') as json_file:
+        json.dump(data_list, json_file, indent=4)
+    # Optionally, you can print the saved JSON data
+    with open('output.json', 'r') as json_file:
+        saved_data = json.load(json_file)
+        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
+
+    def calculate_cleanliness_percentage(data):
+        total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
+        trash_count = 0
+
+        for prediction in data:
+            x1, y1, x2, y2, confidence = (
+                prediction['box']['x1'],
+                prediction['box']['y1'],
+                prediction['box']['x2'],
+                prediction['box']['y2'],
+                prediction['confidence']
+            )
+
+            # Calculate dynamic object size based on position
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (1920 * 1080)  # Assuming frame size is 1920x1080
+            trash_count += 1 - normalized_area  # Subtract normalized area from 1
+
+        # Calculate cleanliness percentage
+        cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
+        return cleanliness_percentage
+
+    # Example usage with saved_data
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
+    print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
+    proc_frame=results[0].plot()
+    return proc_frame, cleanliness_percentage
+
+
 @app.route("/video-trash",methods=['GET'])
 def video_trash():
     if 'file' not in request.files:
         return "No video file provided", 400
     video_file = request.files['file']
-    ultralytics.checks()
-    from ultralytics import YOLO
-    model = YOLO('yolov8n.pt')
-    result = model(video_file)
+
+    cap = cv2.VideoCapture(video_file)
+    while cap.isOpened():
+        success, frame = cap.read()
+        if success:
+            ann_frame, clean_per = apply_machine_learning_model(model_path=model_path,frame=frame)
+            cv2.imshow("YOLOv8 Inference", ann_frame)
+            print(clean_per)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+        else:
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+    model_path = 'garbage_detector_2.pt'
+    
     return "done"
 
 
