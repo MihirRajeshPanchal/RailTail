@@ -9,6 +9,7 @@ import ultralytics
 from ultralytics import YOLO
 import json
 import glob
+from transformers import pipeline
 
 load_dotenv()
 
@@ -359,34 +360,25 @@ def create_police_member():
             return jsonify({"error": str(e)}), 400
 
 
-@app.route("/add_complaint", methods=["POST"])
-def add_complaint():
+@app.route("/add_complaint/<type>", methods=["POST"])
+def add_complaint(type):
     if request.method == "POST":
         try:
             # Parse the JSON data from the request
             data = request.json
 
             # Extract the required fields from the JSON data
-            complaint_type = data["type"]
+            complaint_type = type
             station = data["station"]
             line = data["line"]
             description=data["description"]
             
-            # Extract the "location" field with x and y coordinates
-            location = data.get("location", {})
-            x_coordinate = location.get("x", None)
-            y_coordinate = location.get("y", None)
-
             # Create the complaint document
             complaint = {
                 "type": complaint_type,
                 "station": station,
                 "line": line,
                 "description": description,
-                "location": {
-                    "x": x_coordinate,
-                    "y": y_coordinate
-                }
             }
             complaints_collection = MongoDB('complaints')
             # Insert the complaint document into MongoDB
@@ -611,6 +603,19 @@ def toggle_assignment(member_id):
             return jsonify({"error": "Assignment toggle failed"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/feedback", methods=["GET"])
+def perform_sentiment_analysis():
+    # Get the text from the client request
+    # data = request.get_json()
+    # text = data.get("text","")
+    text= "THis movie was not great"
+    classifier = pipeline('sentiment-analysis', model = 'finiteautomata/bertweet-base-sentiment-analysis')
+
+    if text:
+        return f"Sentiment Analysis Result: {classifier([text])}"
+    else:
+        return "Please provide text in the 'text' query parameter."
 
     
 
