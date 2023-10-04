@@ -59,7 +59,7 @@ export default function Simple() {
           />
           <HStack spacing={8} alignItems={'center'}>
             <Link to="/Homepage">
-              <Image src="/logo.png" alt="My Logo" width={150} />
+              <Image src="/logo.png" alt="My Logo" width={150} px={5}/>
             </Link>
           </HStack>
           <Flex alignItems={'center'} paddingRight={20}>

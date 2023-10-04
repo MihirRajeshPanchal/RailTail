@@ -43,30 +43,30 @@ export default function SimpleThreeColumns() {
         px={{ base: 3, md: 150 }}
         pb={10}
       >
-        Code Omega
+        RailTail
       </Heading>
     <Center>
          <Box w={1250} p={4}>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
         <Feature
           icon={<Icon as={FcAssistant} w={10} h={10} />}
-          title={'Expert Guidance'}
+          title={'Safety and Security'}
           text={
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"            
+            "RailTail employs AI-powered CCTV networks to monitor railway stations and trains in real-time, promptly detecting and responding to incidents, ensuring the safety of passengers and staff."
           }
         />
         <Feature
           icon={<Icon as={FcDonate} w={10} h={10} />}
-          title={'Resource Accessibility'}
+          title={'Crowd Management'}
           text={
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"            
+            "Using advanced AI, RailTail optimizes passenger flow, effectively mitigating overcrowding and enhancing safety and efficiency at railway stations. RailTail identifies and preempt suspicious activities and potential security threats, bolstering railway security measures"            
           }
         />
         <Feature
           icon={<Icon as={FcWorkflow} w={10} h={10} />}
-          title={'Continuous Learning Pathways'}
+          title={'Cleanliness and Maintenance'}
           text={
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"            
+            "We automate the tracking of cleanliness and maintenance activities through innovative technologies, reducing manual effort and ensuring a cleaner and more reliable railway environment."            
           }
         />
       </SimpleGrid>
