@@ -102,9 +102,6 @@ export default function Simple() {
                   <NavLink key="FeedBack">
                     <Link to="/feedback">Feedback</Link>
                   </NavLink>
-                  <NavLink key="Forums">
-                    <Link to="/forums">Forums</Link>
-                  </NavLink>
                   <NavLink key="ContactUs">
                     <Link to="/contactus">Contact Us</Link>
                   </NavLink>
@@ -163,9 +160,6 @@ export default function Simple() {
                   </NavLink>
                   <NavLink key="FeedBack">
                     <Link to="/feebBack">Feedback</Link>
-                  </NavLink>
-                  <NavLink key="Forums">
-                    <Link to="/forums">Forums</Link>
                   </NavLink>
                   <NavLink key="ContactUs">
                     <Link to="/contactUs">Contact Us</Link>

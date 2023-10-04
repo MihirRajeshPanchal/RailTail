@@ -79,7 +79,7 @@ export default function Cleanliness() {
                       <InputLeftElement>
                         <BsFillTrainFreightFrontFill />
                       </InputLeftElement>
-                      <Input type="text" name="name" placeholder="Enter Station Name" />
+                      <Input type="text" name="station" placeholder="Enter Station Name" />
                     </InputGroup>
                   </FormControl>
 

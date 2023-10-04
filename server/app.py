@@ -4,7 +4,11 @@ from dotenv import load_dotenv
 import os
 from pymongo import MongoClient
 import cv2
+import mail
 import ultralytics
+from ultralytics import YOLO
+import json
+import glob
 
 load_dotenv()
 
@@ -70,6 +74,8 @@ def apply_machine_learning_model(model,frame):
     return proc_frame, cleanliness_percentage
 
 
+
+
 def generate_video():
     # Create a VideoCapture object to capture the screen
     screen_capture = cv2.VideoCapture(0)  # Change the index to capture a specific screen if necessary
@@ -84,13 +90,13 @@ def generate_video():
         processed_frame, cleanliness = apply_machine_learning_model(model,frame)
 
         # Encode the processed frame as JPEG
-        _, buffer = cv2.imencode('.jpg', processed_frame)
-        frame_bytes = buffer.tobytes()
+    #     _, buffer = cv2.imencode('.jpg', processed_frame)
+    #     frame_bytes = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+    #     yield (b'--frame\r\n'
+    #            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-    screen_capture.release()
+    # screen_capture.release()
     cv2.destroyAllWindows()
 
 class CrowdSchema:
@@ -455,22 +461,144 @@ def get_police():
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
+
+def video_save():
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('frames/*jpg'):
+        print(file_n)
+        file_n=file_n.replace('frames/','')
+        file_n = file_n.replace('.jpg', '')
+        file_list.append(file_n)
+
+    file_list.sort(key=int)
+    for filename in file_list:
+        img = cv2.imread('frames/'+filename+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter('videos/project.mp4', cv2.VideoWriter_fourcc(*'H264'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+        print('Frame:',i)
+    out.release()
+
+
+def apply_machine_learning_model(model_path,frame):
+    model = YOLO(model_path)
+    results=model(frame)
+    l=[]
+    for result in results:
+        l.append(result.tojson())
+
+    # Your list of dictionaries as a string within a list
+    data_str = l 
+    # Parse the string into a Python list
+    data_list = json.loads(data_str[0])
+    # Save the list to a JSON file
+    with open('output.json', 'w') as json_file:
+        json.dump(data_list, json_file, indent=4)
+    # Optionally, you can print the saved JSON data
+    with open('output.json', 'r') as json_file:
+        saved_data = json.load(json_file)
+        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
+
+    def calculate_cleanliness_percentage(data):
+        total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
+        trash_count = 0
+
+        for prediction in data:
+            x1, y1, x2, y2, confidence = (
+                prediction['box']['x1'],
+                prediction['box']['y1'],
+                prediction['box']['x2'],
+                prediction['box']['y2'],
+                prediction['confidence']
+            )
+
+            # Calculate dynamic object size based on position
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (320 * 320)  # Assuming frame size is 1920x1080
+            trash_count += normalized_area  # Subtract normalized area from 1
+
+        # Calculate cleanliness percentage
+        if total_objects>0 :
+            cleanliness_percentage = (trash_count / total_objects) * 100
+            return cleanliness_percentage
+        else:
+            return 0
+    # Example usage with saved_data
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
+    print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
+    # print(cleanliness_percentage)
+    proc_frame=results[0].plot()
+    return proc_frame
+
+
 @app.route("/video-trash",methods=['GET'])
 def video_trash():
-    if 'file' not in request.files:
-        return "No video file provided", 400
-    video_file = request.files['file']
-    ultralytics.checks()
-    from ultralytics import YOLO
-    model = YOLO('yolov8n.pt')
-    result = model(video_file)
+    # video_file = request.files['file']
+    video_file = "garbage4.mp4"
+    model_path = 'garbage_detector_1.pt'
+    cnt=0
+    c1=0
+    cap = cv2.VideoCapture(video_file)
+    # while cap.isOpened():
+    #     success, frame = cap.read()
+    #     if c1%5==0:
+    #         print(c1)
+    #         if success:
+    #             frame=cv2.resize(frame,(320,320))
+    #             ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
+    #             cv2.imshow("YOLOv8 Inference", ann_frame)
+    #             cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+    #             cnt+=1
+    #             if cv2.waitKey(1) & 0xFF == ord("q"):
+    #                 break
+    #         else:
+    #             break
+    #     else:
+    #         pass
+    #     c1 += 1
+    video_save()        
+    cap.release()
+    cv2.destroyAllWindows()
+    
+    
     return "done"
-
 
 
 @app.route("/live-video")
 def live_video():
     return Response(generate_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route("/assign/<member_id>", methods=["POST"])
+def toggle_assignment(member_id):
+    try:
+        data = request.get_json()
+        platform = data.get('platformNumber', '')
+        staff_member = staff_member_collection.get_staff_member_by_id(int(member_id))
+        staff_name = staff_member.get("name", "")
+        staff_email = staff_member.get("email", "")
+        if not staff_member:
+            return jsonify({"error": "Staff member not found"}), 404
+        current_assigned = staff_member.get("assigned", False)
+        new_assigned = not current_assigned
+        print(new_assigned)
+        staff_collec = MongoDB("staff_member")
+        result=staff_collec.update_one({"id": int(member_id)}, {"$set": {"assigned": new_assigned}})
+        mail.send_mail(staff_email,1,staff_name,platform)
+        if result:
+            return jsonify({"message": "Assignment toggled successfully"})
+        else:
+            return jsonify({"error": "Assignment toggle failed"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

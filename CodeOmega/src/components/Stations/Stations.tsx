@@ -1658,7 +1658,7 @@ export default function Stations() {
         </Box>
       </Center>
       </Container>
-      <Stack spacing={4}>
+      <Stack spacing={4} mx={9}>
       <div
           style={{
             display: 'grid',

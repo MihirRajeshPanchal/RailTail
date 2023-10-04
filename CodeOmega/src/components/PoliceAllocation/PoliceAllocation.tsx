@@ -11,11 +11,37 @@ import {
   HStack,
   IconButton,
   Avatar,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  FormControl,
+  FormLabel,
+  FormHelperText,
 } from '@chakra-ui/react';
 import { BsTelephone, BsMailbox } from 'react-icons/bs';
 import staffimg from "../../assets/policeman.png"
 export default function PoliceAllocation() {
   const [dataArray, setDataArray] = useState([]);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [platformNumber, setPlatformNumber] = useState('');
+
+  const openAssignModal = () => {
+    setIsAssignModalOpen(true);
+  };
+
+  const closeAssignModal = () => {
+    setIsAssignModalOpen(false);
+  };
+
+  const handleAssign = () => {
+    // Add your logic here to assign the staff member to the platform with the platformNumber
+    // After performing the assignment, close the modal
+    closeAssignModal();
+  };
 
   useEffect(() => {
     // Fetch data from the API
@@ -100,13 +126,41 @@ export default function PoliceAllocation() {
                   />
                 </HStack>
               </Center>
-              <Button colorScheme="green" size="lg" my={5} px={6}>
+              <Button colorScheme="green" size="lg" my={5} px={6} onClick={openAssignModal}>
                 Assign
               </Button>
             </Box>
           ))}
         </div>
       </Center>
+
+        {/* Modal for Assigning Staff */}
+      <Modal isOpen={isAssignModalOpen} onClose={closeAssignModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Assign Staff to Platform</ModalHeader>
+          <ModalBody>
+            <FormControl>
+              <FormLabel>Platform Number</FormLabel>
+              <Input
+                type="text"
+                placeholder="Enter platform number"
+                value={platformNumber}
+                onChange={(e) => setPlatformNumber(e.target.value)}
+              />
+              <FormHelperText>Enter the platform number for the assignment.</FormHelperText>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleAssign}>
+              Assign
+            </Button>
+            <Button variant="ghost" onClick={closeAssignModal}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }
