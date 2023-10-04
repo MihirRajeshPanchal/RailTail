@@ -8,6 +8,7 @@ import mail
 import ultralytics
 from ultralytics import YOLO
 import json
+import glob
 
 load_dotenv()
 
@@ -409,6 +410,31 @@ def get_police():
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
 
+def video_save():
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('frames/*jpg'):
+        print(file_n)
+        file_n=file_n.replace('frames/','')
+        file_n = file_n.replace('.jpg', '')
+        file_list.append(file_n)
+
+    file_list.sort(key=int)
+    for filename in file_list:
+        img = cv2.imread('frames/'+filename+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter('videos/project.mp4', cv2.VideoWriter_fourcc(*'H264'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+        print('Frame:',i)
+    out.release()
+
+
 def apply_machine_learning_model(model_path,frame):
     model = YOLO(model_path)
     results=model(frame)
@@ -442,41 +468,52 @@ def apply_machine_learning_model(model_path,frame):
             )
 
             # Calculate dynamic object size based on position
-            normalized_area = ((x2 - x1) * (y2 - y1)) / (1920 * 1080)  # Assuming frame size is 1920x1080
-            trash_count += 1 - normalized_area  # Subtract normalized area from 1
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (320 * 320)  # Assuming frame size is 1920x1080
+            trash_count += normalized_area  # Subtract normalized area from 1
 
         # Calculate cleanliness percentage
-        cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
-        return cleanliness_percentage
-
+        if total_objects>0 :
+            cleanliness_percentage = (trash_count / total_objects) * 100
+            return cleanliness_percentage
+        else:
+            return 0
     # Example usage with saved_data
     cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
-    print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
+    print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
+    # print(cleanliness_percentage)
     proc_frame=results[0].plot()
-    return proc_frame, cleanliness_percentage
+    return proc_frame
 
 
 @app.route("/video-trash",methods=['GET'])
 def video_trash():
-    if 'file' not in request.files:
-        return "No video file provided", 400
-    video_file = request.files['file']
-
+    # video_file = request.files['file']
+    video_file = "garbage4.mp4"
+    model_path = 'garbage_detector_1.pt'
+    cnt=0
+    c1=0
     cap = cv2.VideoCapture(video_file)
-    while cap.isOpened():
-        success, frame = cap.read()
-        if success:
-            ann_frame, clean_per = apply_machine_learning_model(model_path=model_path,frame=frame)
-            cv2.imshow("YOLOv8 Inference", ann_frame)
-            print(clean_per)
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-        else:
-            break
-
+    # while cap.isOpened():
+    #     success, frame = cap.read()
+    #     if c1%5==0:
+    #         print(c1)
+    #         if success:
+    #             frame=cv2.resize(frame,(320,320))
+    #             ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
+    #             cv2.imshow("YOLOv8 Inference", ann_frame)
+    #             cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+    #             cnt+=1
+    #             if cv2.waitKey(1) & 0xFF == ord("q"):
+    #                 break
+    #         else:
+    #             break
+    #     else:
+    #         pass
+    #     c1 += 1
+    video_save()        
     cap.release()
     cv2.destroyAllWindows()
-    model_path = 'garbage_detector_2.pt'
+    
     
     return "done"
 
