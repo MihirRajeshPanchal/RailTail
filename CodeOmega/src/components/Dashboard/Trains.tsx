@@ -15,27 +15,33 @@ import {
 } from '@chakra-ui/react';
 import coach from "../../assets/coach.jpeg";
 import frontcoach from "../../assets/frontcoach.jpeg";
+import b2clean from "../../assets/b2clean.jpg"
+import b2crowd from "../../assets/b2crowd.jpg"
 
 export default function Trains() {
   const coachImages = [frontcoach, coach, coach, coach, coach, coach, coach, coach];
 
-  const interior = [frontcoach,frontcoach,frontcoach,frontcoach,frontcoach,frontcoach,frontcoach,frontcoach]
+  const interiorcrowd = [coach,b2crowd,frontcoach,frontcoach,frontcoach,frontcoach,frontcoach,frontcoach]
+  const interiorclean = [coach,b2clean,frontcoach,frontcoach,frontcoach,frontcoach,frontcoach,frontcoach]
   const clean = [0,0,0,0,0,0,0,0]
   const crowd = [0,0,0,0,0,0,0,0]
 
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedCrowdImage, setSelectedCrowdImage] = useState(null);
+  const [selectedCleanImage, setSelectedCleanImage] = useState(null);
   const [selectedBoogieNumber, setSelectedBoogieNumber] = useState(null);
   const [selectedClean, setSelectedClean] = useState(null);
   const [selectedCrowd, setSelectedCrowd] = useState(null);
 
   const openPopup = (index) => {
-    const selectedImage = interior[index];
     const selectedBoogieNumber = index + 1;
+    const selectedCrowdImage = interiorcrowd[index];
+    const selectedCleanImage = interiorclean[index];
     const selectedClean = clean[index];
     const selectedCrowd = crowd[index];
-    setSelectedImage(selectedImage);
     setSelectedBoogieNumber(selectedBoogieNumber);
+    setSelectedCrowdImage(selectedCrowdImage);
+    setSelectedCleanImage(selectedCleanImage);
     setSelectedClean(selectedClean);
     setSelectedCrowd(selectedCrowd);
     setPopupOpen(true);
@@ -43,7 +49,8 @@ export default function Trains() {
 
   const closePopup = () => {
     setPopupOpen(false);
-    setSelectedImage(null);
+    setSelectedCrowdImage(null);
+    setSelectedCleanImage(null);
   };
 
   return (
@@ -103,17 +110,17 @@ export default function Trains() {
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                {selectedImage && (
+                {(
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <div style={{ flex: 1, marginRight: "10px" }}>
                             <Center>
-                                <Image src={selectedImage} alt="Popup Image" />
+                                <Image src={selectedCrowdImage} alt="Popup Image" />
                             </Center>
                             <Text textAlign="center" mt={4}>{selectedClean}</Text>
                         </div>
                         <div style={{ flex: 1, marginLeft: "10px" }}>
                             <Center>
-                                <Image src={selectedImage} alt="Popup Image" />
+                                <Image src={selectedCleanImage} alt="Popup Image" />
                             </Center>
                             <Text textAlign="center" mt={4}>{selectedClean}</Text>
                         </div>
