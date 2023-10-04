@@ -688,6 +688,9 @@ def crowd_detector_image():
     results = model.predict(file_path, confidence=40, overlap=30).json()
     model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
     response = {"Number of People": len(results['predictions'])}
+    with open('../CodeOmega/src/components/CrowdDetection/crowdjson.json', 'w') as json_file:
+        json.dump({"num":len(results['predictions'])}, json_file)
+
     print("Response",response)
     return jsonify(response)
 
