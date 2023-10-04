@@ -18,51 +18,47 @@ import { BsGithub, BsLinkedin, BsInstagram } from 'react-icons/bs';
 
 const dataArray = [
   {
-    Profilepic: 'logo.png',
+    Profilepic: 'mihir.png',
     Fname: 'Mihir',
     Lname: 'Panchal',
-    Position: 'Software Engineer',
-    testimonial: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    Position: 'Full Stack Developer',
+    testimonial: 'I Love Coding in the dark!',
     fk_contactid: {
-      linkedin: 'https://www.linkedin.com/in/johndoe',
-      insta: 'https://www.instagram.com/johndoe',
-      github: 'https://github.com/johndoe',
+      linkedin: 'https://www.linkedin.com/in/mihirpanchal54/',
+      github: 'https://github.com/MihirRajeshPanchal',
     },
   },
   {
-    Profilepic: 'logo.png',
+    Profilepic: 'vedant.jpg',
     Fname: 'Vedant',
     Lname: 'Kambli',
-    Position: 'Designer',
-    testimonial: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',    
+    Position: 'AI and ML Developer',
+    testimonial: 'Learning new things',    
     fk_contactid: {
-      linkedin: 'https://www.linkedin.com/in/janesmith',
-      insta: 'https://www.instagram.com/janesmith',
-      github: 'https://github.com/janesmith',
+      linkedin: 'https://www.linkedin.com/in/vedant-kambli/',
+      github: 'https://github.com/Vedant-K1',
     },
   },
   {
-    Profilepic: 'logo.png',
+    Profilepic: 'hatim.png',
     Fname: 'Hatim',
     Lname: 'Mullajiwala',
-    Position: 'Designer',
-    testimonial: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',    
+    Position: 'Backend Developer',
+    testimonial: 'I always respond in a json object',    
     fk_contactid: {
-      linkedin: 'https://www.linkedin.com/in/janesmith',
-      insta: 'https://www.instagram.com/janesmith',
-      github: 'https://github.com/janesmith',
+      linkedin: 'https://www.linkedin.com/in/hatim-mullajiwala-37937a228/',
+      github: 'https://github.com/HatimCodeforever',
     },
   },
   {
-    Profilepic: 'logo.png',
+    Profilepic: 'haadi.jpg',
     Fname: 'Haadi',
     Lname: 'Rakhangi',
-    Position: 'Designer',
-    testimonial: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',    
+    Position: 'AI and ML Developer',
+    testimonial: 'Python is Love',    
     fk_contactid: {
-      linkedin: 'https://www.linkedin.com/in/janesmith',
-      insta: 'https://www.instagram.com/janesmith',
-      github: 'https://github.com/janesmith',
+      linkedin: 'https://www.linkedin.com/in/haadi-rakhangi-412201269/',
+      github: 'https://github.com/haadirakhangi',
     },
   },
   // Add more objects as needed
@@ -124,15 +120,6 @@ export default function SocialProfileSimple() {
                     onClick={() => window.open(data.fk_contactid.linkedin, '_blank')}
                     _hover={{ bg: '#0D74FF' }}
                     icon={<BsLinkedin size="28px" />}
-                  />
-                  <IconButton
-                    aria-label="Instagram"
-                    variant="ghost"
-                    size="lg"
-                    isRound={true}
-                    onClick={() => window.open(data.fk_contactid.insta, '_blank')}
-                    _hover={{ bg: '#0D74FF' }}
-                    icon={<BsInstagram size="23px" />}
                   />
                   <IconButton
                     aria-label="Github"
