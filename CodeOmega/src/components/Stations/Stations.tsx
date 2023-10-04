@@ -1,7 +1,1703 @@
-import React from 'react'
+import React, { useState } from 'react';
+import {
+  Box,
+  Input,
+  Card,
+  CardBody,
+  Heading,
+  Stack,
+  Text,
+  Center,
+  Container,
+} from '@chakra-ui/react';
+
+const stationData = [
+  {
+    "name": "Churchgate",
+    "code": "CCG",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Marine Lines",
+    "code": "MEL",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Charni Road",
+    "code": "CYR",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Grant Road",
+    "code": "GTR",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1868.0
+  },
+  {
+    "name": "Mumbai Central",
+    "code": "MMCT",
+    "line": "Western",
+    "platforms": 9.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1930.0
+  },
+  {
+    "name": "Mahalakshmi",
+    "code": "MX",
+    "line": "Western",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Lower Parel",
+    "code": "PL",
+    "line": "Western",
+    "platforms": 3.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Prabhadevi",
+    "code": "PBHD",
+    "line": "Western",
+    "platforms": 2.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Dadar",
+    "code": "D/DR/DDR",
+    "line": "Western",
+    "platforms": 15.0,
+    "tracks": 13.0,
+    "yearOfOpening": 1868.0
+  },
+  {
+    "name": "Matunga Road",
+    "code": "MRU",
+    "line": "Western",
+    "platforms": 2.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Mahim Jn",
+    "code": "MM",
+    "line": "Western",
+    "platforms": 6.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1896.0
+  },
+  {
+    "name": "Bandra",
+    "code": "B/BA",
+    "line": "Western",
+    "platforms": 7.0,
+    "tracks": 8.0,
+    "yearOfOpening": 1869.0
+  },
+  {
+    "name": "Khar Road",
+    "code": "KHAR",
+    "line": "Western",
+    "platforms": 6.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1924.0
+  },
+  {
+    "name": "Santacruz",
+    "code": "STC",
+    "line": "Western",
+    "platforms": 6.0,
+    "tracks": 8.0,
+    "yearOfOpening": 1888.0
+  },
+  {
+    "name": "Vile Parle",
+    "code": "VLP",
+    "line": "Western",
+    "platforms": 6.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1916.0
+  },
+  {
+    "name": "Andheri",
+    "code": "A/AD/ADH",
+    "line": "Western",
+    "platforms": 9.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1928.0
+  },
+  {
+    "name": "Jogeshwari",
+    "code": "JOS",
+    "line": "Western",
+    "platforms": 6.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Ram Mandir",
+    "code": "RMAR",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 7.0,
+    "yearOfOpening": 2016.0
+  },
+  {
+    "name": "Goregaon",
+    "code": "GMN",
+    "line": "Western",
+    "platforms": 7.0,
+    "tracks": 8.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Malad",
+    "code": "MDD",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Kandivali",
+    "code": "KLE",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1907.0
+  },
+  {
+    "name": "Borivali",
+    "code": "BO/BVI",
+    "line": "Western",
+    "platforms": 10.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Dahisar",
+    "code": "DIC",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Mira Road",
+    "code": "MIRA",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1990.0
+  },
+  {
+    "name": "Bhayander",
+    "code": "BY",
+    "line": "Western",
+    "platforms": 6.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Naigaon",
+    "code": "NIG",
+    "line": "Western",
+    "platforms": 3.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1994.0
+  },
+  {
+    "name": "Vasai Road",
+    "code": "BSR/BS",
+    "line": "Western",
+    "platforms": 8.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1864.0
+  },
+  {
+    "name": "Nalla Sopara",
+    "code": "NSP",
+    "line": "Western",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Virar",
+    "code": "VR",
+    "line": "Western",
+    "platforms": 8.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Vaitarna",
+    "code": "VTN",
+    "line": "Western",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2018.0
+  },
+  {
+    "name": "Saphale",
+    "code": "SAH",
+    "line": "Western",
+    "platforms": 2.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1894.0
+  },
+  {
+    "name": "Kelve Road",
+    "code": "KLV",
+    "line": "Western",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1894.0
+  },
+  {
+    "name": "Palghar",
+    "code": "PLG",
+    "line": "Western",
+    "platforms": 3.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1893.0
+  },
+  {
+    "name": "Umroli Road",
+    "code": "UOI",
+    "line": "Western",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Boisar",
+    "code": "BOR",
+    "line": "Western",
+    "platforms": 3.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1992.0
+  },
+  {
+    "name": "Vangaon",
+    "code": "VGN",
+    "line": "Western",
+    "platforms": 3.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2012.0
+  },
+  {
+    "name": "Dahanu Road",
+    "code": "DRD",
+    "line": "Western",
+    "platforms": 5.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1898.0
+  },
+  {
+    "name": "CSMT",
+    "code": "CSMT/ST",
+    "line": "Central 1",
+    "platforms": 7.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1878.0
+  },
+  {
+    "name": "Masjid",
+    "code": "MSD",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Sandhurst Road",
+    "code": "SNRD",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1921.0
+  },
+  {
+    "name": "Byculla",
+    "code": "BY",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Chinchpokli",
+    "code": "CHG",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Currey Road",
+    "code": "CRD",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1915.0
+  },
+  {
+    "name": "Parel",
+    "code": "PR",
+    "line": "Central 1",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Dadar",
+    "code": "D/DR/DDR",
+    "line": "Central 1",
+    "platforms": 15.0,
+    "tracks": 13.0,
+    "yearOfOpening": 1868.0
+  },
+  {
+    "name": "Matunga",
+    "code": "MTN",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1865.0
+  },
+  {
+    "name": "Sion",
+    "code": "SIN",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Kurla",
+    "code": "C/CH",
+    "line": "Central 1",
+    "platforms": 8.0,
+    "tracks": 8.0,
+    "yearOfOpening": 1879.0
+  },
+  {
+    "name": "Vidhyavihar",
+    "code": "VVH",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1865.0
+  },
+  {
+    "name": "Ghatkopar",
+    "code": "G",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Vikhroli",
+    "code": "VK",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1947.0
+  },
+  {
+    "name": "Kanjur Marg",
+    "code": "KJMG",
+    "line": "Central 1",
+    "platforms": 3.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1968.0
+  },
+  {
+    "name": "Bhandup",
+    "code": "BND",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Nahur",
+    "code": "NHU",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2006.0
+  },
+  {
+    "name": "Mulund",
+    "code": "MLND",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1931.0
+  },
+  {
+    "name": "Thane",
+    "code": "TNA",
+    "line": "Central 1",
+    "platforms": 10.0,
+    "tracks": 10.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Kalva",
+    "code": "KLVA",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1968.0
+  },
+  {
+    "name": "Mumbra",
+    "code": "MBQ",
+    "line": "Central 1",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1865.0
+  },
+  {
+    "name": "Diva Jn",
+    "code": "DIVA",
+    "line": "Central 1",
+    "platforms": 8.0,
+    "tracks": 13.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Kopar",
+    "code": "KOPR",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Dombivli",
+    "code": "DI",
+    "line": "Central 1",
+    "platforms": 5.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1886.0
+  },
+  {
+    "name": "Thakurli",
+    "code": "THK",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 3.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Kalyan",
+    "code": "KYN",
+    "line": "Central 1",
+    "platforms": 8.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1884.0
+  },
+  {
+    "name": "Vithalwadi",
+    "code": "VLDI",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Ulhas Nagar",
+    "code": "ULNR",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Ambernath",
+    "code": "ABH",
+    "line": "Central 1",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1884.0
+  },
+  {
+    "name": "Badalpur",
+    "code": "BUD",
+    "line": "Central 1",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1984.0
+  },
+  {
+    "name": "Vangani",
+    "code": "VGI",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Shelu",
+    "code": "SHLU",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Neral",
+    "code": "NRL",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1887.0
+  },
+  {
+    "name": "Bhivpuri Road",
+    "code": "BVS",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Karjat",
+    "code": "KJT/S",
+    "line": "Central 1",
+    "platforms": 3.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1920.0
+  },
+  {
+    "name": "Palasdhari",
+    "code": "PDI",
+    "line": "Central 1",
+    "platforms": 1.0,
+    "tracks": 3.0,
+    "yearOfOpening": 2004.0
+  },
+  {
+    "name": "Kelavli",
+    "code": "KLY",
+    "line": "Central 1",
+    "platforms": 1.0,
+    "tracks": 1.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Dolavli",
+    "code": "DLV",
+    "line": "Central 1",
+    "platforms": 1.0,
+    "tracks": 1.0,
+    "yearOfOpening": 1916.0
+  },
+  {
+    "name": "Lowjee",
+    "code": "LWJ",
+    "line": "Central 1",
+    "platforms": 1.0,
+    "tracks": 1.0,
+    "yearOfOpening": 1916.0
+  },
+  {
+    "name": "Khopoli",
+    "code": "KP",
+    "line": "Central 1",
+    "platforms": 2.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "CSMT",
+    "code": "CSMT/ST",
+    "line": "Central 2",
+    "platforms": 7.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1878.0
+  },
+  {
+    "name": "Masjid",
+    "code": "MSD",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Sandhurst Road",
+    "code": "SNRD",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1921.0
+  },
+  {
+    "name": "Byculla",
+    "code": "BY",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Chinchpokli",
+    "code": "CHG",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Currey Road",
+    "code": "CRD",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1915.0
+  },
+  {
+    "name": "Parel",
+    "code": "PR",
+    "line": "Central 2",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Dadar",
+    "code": "D/DR/DDR",
+    "line": "Central 2",
+    "platforms": 15.0,
+    "tracks": 13.0,
+    "yearOfOpening": 1868.0
+  },
+  {
+    "name": "Matunga",
+    "code": "MTN",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1865.0
+  },
+  {
+    "name": "Sion",
+    "code": "SIN",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Kurla",
+    "code": "C/CH",
+    "line": "Central 2",
+    "platforms": 8.0,
+    "tracks": 8.0,
+    "yearOfOpening": 1879.0
+  },
+  {
+    "name": "Vidhyavihar",
+    "code": "VVH",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1865.0
+  },
+  {
+    "name": "Ghatkopar",
+    "code": "G",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Vikhroli",
+    "code": "VK",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1947.0
+  },
+  {
+    "name": "Kanjur Marg",
+    "code": "KJMG",
+    "line": "Central 2",
+    "platforms": 3.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1968.0
+  },
+  {
+    "name": "Bhandup",
+    "code": "BND",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Nahur",
+    "code": "NHU",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2006.0
+  },
+  {
+    "name": "Mulund",
+    "code": "MLND",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1931.0
+  },
+  {
+    "name": "Thane",
+    "code": "TNA",
+    "line": "Central 2",
+    "platforms": 10.0,
+    "tracks": 10.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Kalva",
+    "code": "KLVA",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1968.0
+  },
+  {
+    "name": "Mumbra",
+    "code": "MBQ",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1865.0
+  },
+  {
+    "name": "Diva Jn",
+    "code": "DIVA",
+    "line": "Central 2",
+    "platforms": 8.0,
+    "tracks": 13.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Kopar",
+    "code": "KOPR",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Dombivli",
+    "code": "DI",
+    "line": "Central 2",
+    "platforms": 5.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1886.0
+  },
+  {
+    "name": "Thakurli",
+    "code": "THK",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 3.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Kalyan",
+    "code": "KYN",
+    "line": "Central 2",
+    "platforms": 8.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1884.0
+  },
+  {
+    "name": "Shahad",
+    "code": "SHAD",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Ambivli",
+    "code": "ABY",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Titwala",
+    "code": "TLA",
+    "line": "Central 2",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1958.0
+  },
+  {
+    "name": "Khadavli",
+    "code": "KDV",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1916.0
+  },
+  {
+    "name": "Vasind",
+    "code": "VSD",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1916.0
+  },
+  {
+    "name": "Asangaon",
+    "code": "ASO",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2006.0
+  },
+  {
+    "name": "Atagaon",
+    "code": "ATG",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Thansit",
+    "code": "THS",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": NaN,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Khardi",
+    "code": "KE",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2006.0
+  },
+  {
+    "name": "Umbermali",
+    "code": "OMB",
+    "line": "Central 2",
+    "platforms": 2.0,
+    "tracks": NaN,
+    "yearOfOpening": 2006.0
+  },
+  {
+    "name": "Kasara",
+    "code": "KSRA",
+    "line": "Central 2",
+    "platforms": 4.0,
+    "tracks": 10.0,
+    "yearOfOpening": 2006.0
+  },
+  {
+    "name": "CSMT",
+    "code": "CSMT/ST",
+    "line": "Harbour",
+    "platforms": 7.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1878.0
+  },
+  {
+    "name": "Masjid",
+    "code": "MSD",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Sandhurst Road",
+    "code": "SNRD",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1921.0
+  },
+  {
+    "name": "Dockyarad Road",
+    "code": "DKRD",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Reay Road",
+    "code": "RRD",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1910.0
+  },
+  {
+    "name": "Cotton Green",
+    "code": "CTGN",
+    "line": "Harbour",
+    "platforms": 3.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Sewri",
+    "code": "SVE",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Vadala Road",
+    "code": "VDLR",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "GTB Nagar",
+    "code": "GTBN",
+    "line": "Harbour",
+    "platforms": 1.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2004.0
+  },
+  {
+    "name": "Chunabhatti",
+    "code": "CHF",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Kurla",
+    "code": "C/CH",
+    "line": "Harbour",
+    "platforms": 8.0,
+    "tracks": 8.0,
+    "yearOfOpening": 1879.0
+  },
+  {
+    "name": "Tilaknagar",
+    "code": "TKNG",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Chembur",
+    "code": "CMBR",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1906.0
+  },
+  {
+    "name": "Govandi",
+    "code": "GV",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Mankhurd",
+    "code": "MNKD",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1925.0
+  },
+  {
+    "name": "Vashi",
+    "code": "VSH",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1992.0
+  },
+  {
+    "name": "Sanpada",
+    "code": "SNCR",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2000.0
+  },
+  {
+    "name": "Juinagar",
+    "code": "JNJ",
+    "line": "Harbour",
+    "platforms": 6.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1992.0
+  },
+  {
+    "name": "Nerul",
+    "code": "NEU",
+    "line": "Harbour",
+    "platforms": 6.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1993.0
+  },
+  {
+    "name": "Seawood Darave",
+    "code": "SWDV",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2018.0
+  },
+  {
+    "name": "Belapur CBD",
+    "code": "BEPR",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1994.0
+  },
+  {
+    "name": "Kharghar",
+    "code": "KHAG",
+    "line": "Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Mansarovar",
+    "code": "MANR",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2008.0
+  },
+  {
+    "name": "Khandeshwar",
+    "code": "KNDS",
+    "line": "Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2004.0
+  },
+  {
+    "name": "Panvel",
+    "code": "PNVL",
+    "line": "Harbour",
+    "platforms": 7.0,
+    "tracks": 10.0,
+    "yearOfOpening": 1962.0
+  },
+  {
+    "name": "Thane",
+    "code": "TNA",
+    "line": "Trans Harbour",
+    "platforms": 10.0,
+    "tracks": 10.0,
+    "yearOfOpening": 1853.0
+  },
+  {
+    "name": "Airoli",
+    "code": "AIRL",
+    "line": "Trans Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2004.0
+  },
+  {
+    "name": "Rabale",
+    "code": "RABE",
+    "line": "Trans Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2007.0
+  },
+  {
+    "name": "Ghansoli",
+    "code": "GNSL",
+    "line": "Trans Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2000.0
+  },
+  {
+    "name": "Koparkhairane",
+    "code": "KPHN",
+    "line": "Trans Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2004.0
+  },
+  {
+    "name": "Turbhe",
+    "code": "TUH",
+    "line": "Trans Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2000.0
+  },
+  {
+    "name": "Juinagar",
+    "code": "JNJ",
+    "line": "Trans Harbour",
+    "platforms": 6.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1992.0
+  },
+  {
+    "name": "Nerul",
+    "code": "NEU",
+    "line": "Trans Harbour",
+    "platforms": 6.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1993.0
+  },
+  {
+    "name": "Seawood Darave",
+    "code": "SWDV",
+    "line": "Trans Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2018.0
+  },
+  {
+    "name": "Belapur CBD",
+    "code": "BEPR",
+    "line": "Trans Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1994.0
+  },
+  {
+    "name": "Kharghar",
+    "code": "KHAG",
+    "line": "Trans Harbour",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Mansarovar",
+    "code": "MANR",
+    "line": "Trans Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2008.0
+  },
+  {
+    "name": "Khandeshwar",
+    "code": "KNDS",
+    "line": "Trans Harbour",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2004.0
+  },
+  {
+    "name": "Panvel",
+    "code": "PNVL",
+    "line": "Trans Harbour",
+    "platforms": 7.0,
+    "tracks": 10.0,
+    "yearOfOpening": 1962.0
+  },
+  {
+    "name": "Nerul",
+    "code": "NEU",
+    "line": "Uran",
+    "platforms": 6.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1993.0
+  },
+  {
+    "name": "Seawood Darave",
+    "code": "SWDV",
+    "line": "Uran",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2018.0
+  },
+  {
+    "name": "Belapur CBD",
+    "code": "BEPR",
+    "line": "Uran",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1994.0
+  },
+  {
+    "name": "Bamandongri",
+    "code": "BMNDG",
+    "line": "Uran",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2018.0
+  },
+  {
+    "name": "Kharkopar",
+    "code": "KARP",
+    "line": "Uran",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2018.0
+  },
+  {
+    "name": "Diva Jn",
+    "code": "DIVA",
+    "line": "Diva-Roha",
+    "platforms": 8.0,
+    "tracks": 13.0,
+    "yearOfOpening": 1877.0
+  },
+  {
+    "name": "Dativali",
+    "code": "DTVL",
+    "line": "Diva-Roha",
+    "platforms": 3.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Nilje",
+    "code": "NIIJ",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Taloja Panchanand",
+    "code": "TPND",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Navade Road",
+    "code": "NVRD",
+    "line": "Diva-Roha",
+    "platforms": 3.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Kalamboli",
+    "code": "KLMG",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Panvel",
+    "code": "PNVL",
+    "line": "Diva-Roha",
+    "platforms": 7.0,
+    "tracks": 10.0,
+    "yearOfOpening": 1962.0
+  },
+  {
+    "name": "Somtane",
+    "code": "SMNE",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2024.0
+  },
+  {
+    "name": "Rasayani",
+    "code": "RSYI",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2009.0
+  },
+  {
+    "name": "Apta",
+    "code": "APTA",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2009.0
+  },
+  {
+    "name": "Jite",
+    "code": "JITE",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2023.0
+  },
+  {
+    "name": "Hamarapur",
+    "code": "HPUR",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Pen",
+    "code": "PEN",
+    "line": "Diva-Roha",
+    "platforms": 3.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1888.0
+  },
+  {
+    "name": "Kasu",
+    "code": "KASU",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Nagothane",
+    "code": "NGTN",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1863.0
+  },
+  {
+    "name": "Nidi",
+    "code": "NIDI",
+    "line": "Diva-Roha",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Roha",
+    "code": "ROHA",
+    "line": "Diva-Roha",
+    "platforms": 3.0,
+    "tracks": 7.0,
+    "yearOfOpening": 1986.0
+  },
+  {
+    "name": "Dahanu Road",
+    "code": "DRD",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 5.0,
+    "tracks": 6.0,
+    "yearOfOpening": 1898.0
+  },
+  {
+    "name": "Vangaon",
+    "code": "VGN",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 3.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2012.0
+  },
+  {
+    "name": "Boisar",
+    "code": "BOR",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 3.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1992.0
+  },
+  {
+    "name": "Umroli Road",
+    "code": "UOI",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Palghar",
+    "code": "PLG",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 3.0,
+    "tracks": 5.0,
+    "yearOfOpening": 1893.0
+  },
+  {
+    "name": "Kelva Road",
+    "code": "KLV",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 3.0,
+    "tracks": 3.0,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Saphale",
+    "code": "SAH",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 2.0,
+    "tracks": 3.0,
+    "yearOfOpening": 1894.0
+  },
+  {
+    "name": "Vaitarna",
+    "code": "VTN",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2018.0
+  },
+  {
+    "name": "Virar",
+    "code": "VR",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 8.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Nalla Sopara",
+    "code": "NSP",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 4.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1867.0
+  },
+  {
+    "name": "Vasai Road",
+    "code": "BSR/BS",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 8.0,
+    "tracks": 9.0,
+    "yearOfOpening": 1864.0
+  },
+  {
+    "name": "Juchandra Road",
+    "code": "JCNR",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": NaN,
+    "tracks": NaN,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Kaman Road",
+    "code": "KARD",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 3.0,
+    "tracks": 4.0,
+    "yearOfOpening": 2023.0
+  },
+  {
+    "name": "Kharbao",
+    "code": "KHBV",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 4.0,
+    "tracks": NaN,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Bhiwandi Road",
+    "code": "BIRD",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 5.0,
+    "tracks": NaN,
+    "yearOfOpening": 1879.0
+  },
+  {
+    "name": "Kopar",
+    "code": "KOPR",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Dativali",
+    "code": "DTVL",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 3.0,
+    "tracks": 2.0,
+    "yearOfOpening": 2017.0
+  },
+  {
+    "name": "Nilje",
+    "code": "NIIJ",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Taloja Panchanand",
+    "code": "TPND",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Navade Road",
+    "code": "NVRD",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 3.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Kalamboli",
+    "code": "KLMG",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 2.0,
+    "tracks": 4.0,
+    "yearOfOpening": 1966.0
+  },
+  {
+    "name": "Panvel",
+    "code": "PNVL",
+    "line": "Dahanu-Virar-Panvel",
+    "platforms": 7.0,
+    "tracks": 10.0,
+    "yearOfOpening": 1962.0
+  },
+  {
+    "name": "Neral",
+    "code": "NRL",
+    "line": "Neral-Matheran",
+    "platforms": 2.0,
+    "tracks": 2.0,
+    "yearOfOpening": 1887.0
+  },
+  {
+    "name": "Jumapatti",
+    "code": "JTT",
+    "line": "Neral-Matheran",
+    "platforms": NaN,
+    "tracks": NaN,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Waterpipe",
+    "code": "WTP",
+    "line": "Neral-Matheran",
+    "platforms": NaN,
+    "tracks": NaN,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Aman Lodge",
+    "code": "AMNA",
+    "line": "Neral-Matheran",
+    "platforms": NaN,
+    "tracks": NaN,
+    "yearOfOpening": NaN
+  },
+  {
+    "name": "Matheran",
+    "code": "MAE",
+    "line": "Neral-Matheran",
+    "platforms": NaN,
+    "tracks": NaN,
+    "yearOfOpening": 1907.0
+  }
+];
 
 export default function Stations() {
+  const [search, setSearch] = useState('');
+
+  const filteredStations = stationData.filter((station) =>
+    station.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div>Stations</div>
-  )
+    <>
+    <Container>
+      <Center>
+    <Heading
+              fontSize={{
+                base: '4xl',
+                md: '3xl',
+              }}>
+              Search Stations :         
+    </Heading>
+        <Box mt={4} mb={4}>
+          <Input
+            mx={4}
+            placeholder="Search Stations"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Box>
+      </Center>
+      </Container>
+      <Stack spacing={4}>
+      <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '1rem',
+          }}>
+        {filteredStations.map((station, index) => (
+          <Card
+            maxW="1400px"
+            borderWidth="1px"
+            borderRadius="lg"
+            overflow="hidden"
+            boxShadow="md"
+            key={station.number}
+          >
+            <CardBody p={4}>
+              <Heading fontSize="xl" mb={2}>
+                {station.name}
+              </Heading>
+              <Text fontSize="sm" mb={2}>
+                Station Code: {station.code}
+              </Text>
+              <Text fontSize="sm" mb={2}>
+                Line: {station.line}
+              </Text>
+              <Text fontSize="sm" mb={2}>
+                Platforms: {station.platforms}
+              </Text>
+              <Text fontSize="sm" mb={2}>
+                Tracks: {station.tracks}
+              </Text>
+              <Text fontSize="sm" mb={2}>
+                Year of Opening: {station.yearOfOpening}
+              </Text>
+            </CardBody>
+          </Card>
+        ))}
+        </div>
+      </Stack>
+      </>
+  );
 }
