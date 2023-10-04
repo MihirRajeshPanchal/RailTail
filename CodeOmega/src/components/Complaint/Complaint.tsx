@@ -85,6 +85,11 @@ export default function ProductSimple() {
             Complaint
           </Button>
         </Center>
+        <Center>
+          <Button as={Link} to="/videocall" colorScheme="green" size="lg" my={5} px={6}>
+              VideoCall
+          </Button>
+        </Center>
       </Box>
       <Box
         role={'group'}
@@ -134,6 +139,11 @@ export default function ProductSimple() {
         <Center>
           <Button as={Link} to="/complaintcleanliness" colorScheme="green" size="lg" my={5} px={6}>
               Complaint
+          </Button>
+        </Center>
+        <Center>
+          <Button as={Link} to="/videocall" colorScheme="green" size="lg" my={5} px={6}>
+              VideoCall
           </Button>
         </Center>
       </Box>

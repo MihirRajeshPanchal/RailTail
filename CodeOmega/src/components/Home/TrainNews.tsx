@@ -70,13 +70,15 @@ const ArticleList = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://newsapi.org/v2/everything?q=india+mumbai+trains&from=2023-09-04&sortBy=publishedAt&apiKey=ed91438d8663496fb648751476f33829&language=en'
+          'https://newsapi.org/v2/everything?q=mumbai+trains+railways&from=2023-09-04&sortBy=publishedAt&apiKey=ed91438d8663496fb648751476f33829&language=en'
         );
 
         if (response.ok) {
           const data = await response.json();
           // Assuming the data structure is data.articles
-          setEvents(data.articles.slice(0, 5));
+          const events = data.articles.slice(0, 5);
+          const reversedEvents = events.reverse();
+          setEvents(reversedEvents);
         } else {
           console.error('Failed to fetch data');
         }
