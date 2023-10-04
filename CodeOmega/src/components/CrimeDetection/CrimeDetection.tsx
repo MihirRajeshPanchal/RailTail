@@ -203,7 +203,7 @@ export default function CrimeDetection() {
           </Stack>
         </Stack>
         <Center>
-          <Button as={Link} to="/complaintcleanliness" colorScheme="green" size="lg" my={5} px={6}>
+          <Button as={Link} to="/api_live wala" colorScheme="green" size="lg" my={5} px={6}>
               Compute
           </Button>
         </Center>
