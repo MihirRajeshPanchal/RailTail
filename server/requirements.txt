@@ -5,3 +5,4 @@ flask_cors
 opencv-python
 ultralytics
 roboflow
+transformers

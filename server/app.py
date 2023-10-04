@@ -9,6 +9,7 @@ import ultralytics
 from ultralytics import YOLO
 import json
 import glob
+from transformers import pipeline
 
 load_dotenv()
 
@@ -536,6 +537,19 @@ def toggle_assignment(member_id):
             return jsonify({"error": "Assignment toggle failed"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/feedback", methods=["GET"])
+def perform_sentiment_analysis():
+    # Get the text from the client request
+    # data = request.get_json()
+    # text = data.get("text","")
+    text= "THis movie was not great"
+    classifier = pipeline('sentiment-analysis', model = 'finiteautomata/bertweet-base-sentiment-analysis')
+
+    if text:
+        return f"Sentiment Analysis Result: {classifier([text])}"
+    else:
+        return "Please provide text in the 'text' query parameter."
 
     
 
