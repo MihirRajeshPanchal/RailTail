@@ -84,43 +84,63 @@ export default function LargeWithNewsletter() {
             <Box>
             <Image src="/logo.png" alt="My Logo" width={150}/>
             </Box>
-            <Text fontSize={'sm'}>Teaching machines to learn.</Text>
+            <Text fontSize={'sm'}>Transforming Tracks, Empowering Travels</Text>
           
           </Stack>
           <Stack align={'flex-start'}>
-            <ListHeader>Code Omega</ListHeader>
-            <Box as="a" href={'/Homepage'}>
+            <ListHeader>User</ListHeader>
+            <Box as="a" href={'/homepage'}>
              Home
             </Box>
             
-            <Box as="a" href={'/DashBoard'}>
+            <Box as="a" href={'/dashboard'}>
               Dashboard
             </Box>
-            
-            <Box as="a" href={'/AboutUs'}>
-             About Us
+
+            <Box as="a" href={'/stations'}>
+              Stations
             </Box>
 
-            <Box as="a" href={'/ContactUs'}>
+            <Box as="a" href={'/complain'}>
+              File Complain
+            </Box>
+
+            <Box as="a" href={'/feedback'}>
+              Feedback
+            </Box>
+
+            <Box as="a" href={'/forums'}>
+              Forums
+            </Box>
+            
+            <Box as="a" href={'/contactus'}>
              Contact Us
             </Box>
+
+            <Box as="a" href={'/aboutus'}>
+             About Team
+            </Box>
+
           </Stack>
           <Stack align={'flex-start'}>
-            <ListHeader>About Code Omega</ListHeader>
-            <Box as="a" href={'/ML'}>
-              Machine Learning
+            <ListHeader>Admin</ListHeader>
+            <Box as="a" href={'/home'}>
+              Home
             </Box>
-            <Box as="a" href={'/OpenCV'}>
-              Open CV
+            <Box as="a" href={'/crowddetection'}>
+              Crowd Detection
             </Box>
-            <Box as="a" href={'/Quiz'}>
-              Quiz
+            <Box as="a" href={'/trashdetection'}>
+              Trash Detection
             </Box>
-            <Box as="a" href={'/VideoCall'}>
-              VideoCall
+            <Box as="a" href={'/crimedetection'}>
+              Crime Detection
             </Box>
-            <Box as="a" href={'/Forums'}>
-              Forums
+            <Box as="a" href={'/staffallocation'}>
+              Staff Allocation
+            </Box>
+            <Box as="a" href={'/policeallocation'}>
+              Police Allocation
             </Box>
         
           </Stack>

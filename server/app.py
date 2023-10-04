@@ -1,11 +1,14 @@
 from flask import Flask,jsonify,request
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 from pymongo import MongoClient
+from bson import ObjectId
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 passw = os.getenv("MONGO_PASS")
 connection_string = f"mongodb+srv://codeomega:{passw}@cluster0.hnyk6mi.mongodb.net/?retryWrites=true&w=majority"
 def MongoDB(collection_name):
@@ -339,6 +342,25 @@ def insert_tc_clerk():
 
         except Exception as e:
             return jsonify({"error": str(e)}), 400  # Bad Request
+
+@app.route("/getstaffs", methods=["GET"])
+def get_staff_members():
+    try:
+        # Retrieve all staff members from the "staff_member" collection
+        staff_members = staff_member_collection.get_all_staff_members()
+
+        # Convert ObjectId to string for each staff member
+        staff_members_serializable = []
+        for staff_member in staff_members:
+            staff_member['_id'] = str(staff_member['_id'])  # Convert ObjectId to string
+            staff_members_serializable.append(staff_member)
+
+        # Convert the list of staff members to a JSON response
+        response = {"staff_members": staff_members_serializable}
+        print(response)
+        return jsonify(response), 200  # HTTP status code 200 for OK
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Internal Server Error
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
