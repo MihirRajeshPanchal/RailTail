@@ -641,19 +641,11 @@ def crowd_detector_image():
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
-<<<<<<< HEAD
-    # print(model.predict(file_path, confidence=40, overlap=30).json())
-    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
-    response = {"image": "success"}
-    print("Response",response)
-    return jsonify(response)
-=======
     results = model.predict(image_file, confidence=40, overlap=30).json()
     print(results)
     print('NUMBER OF PEOPLE:', len(results['predictions']))
     
     return "done"
->>>>>>> 15123624e7e7bee3b55782052c9009f0cf992014
 
 @app.route("/upload-crowd-video", methods=['POST'])
 def crowd_detector_video():
