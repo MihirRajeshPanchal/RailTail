@@ -65,33 +65,34 @@ const BlogAuthor = (props: BlogAuthorProps) => {
 }
 
 const ArticleList = () => {
-  const [events, setEvents] = useState([]); 
-  // api = https://newsapi.org/v2/everything?q=railway&from=2023-09-04&sortBy=publishedAt&apiKey=ed91438d8663496fb648751476f33829
-  const localEvents = [
-    {
-      title: 'Event 1',
-      description: 'Description for Event 1',
-      event_date: '2023-10-10',
-      images: ['logo.png'],
-    },
-    {
-      title: 'Event 2',
-      description: 'Description for Event 2',
-      event_date: '2023-10-15',
-      images: ['logo.png'],
-    },
-    // Add more events as needed
-  ];
-
+  const [events, setEvents] = useState([]);
   useEffect(() => {
-    setEvents(localEvents);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          'https://newsapi.org/v2/everything?q=india+mumbai+trains&from=2023-09-04&sortBy=publishedAt&apiKey=ed91438d8663496fb648751476f33829&language=en'
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          // Assuming the data structure is data.articles
+          setEvents(data.articles.slice(0, 5));
+        } else {
+          console.error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
 
   return (
     <Container maxW={'7xl'} p="12">
       <Heading as="h1">Upcoming Events</Heading>
-      {events.map((event) => (
+      {events.map((event, index) => (
       <Box
         marginTop={{ base: '1', sm: '5' }}
         display="flex"
@@ -112,7 +113,7 @@ const ArticleList = () => {
               <Image
                 borderRadius="lg"
                 src={
-                  event.images[0]                
+                  event.urlToImage              
                 }
                 alt="some good alt text"
                 objectFit="contain"
@@ -137,9 +138,9 @@ const ArticleList = () => {
           flexDirection="column"
           justifyContent="center"
           marginTop={{ base: '3', sm: '0' }}>
-          <BlogTags tags={[event.event_date]} />
+          <BlogTags tags={[event.publishedAt]} />
           <Heading marginTop="1">
-            <Text textDecoration="none" _hover={{ textDecoration: 'none' }}>
+            <Text textDecoration="none" _hover={{ textDecoration: 'none' }} >
               {event.title}
             </Text>
           </Heading>
