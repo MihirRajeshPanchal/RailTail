@@ -536,10 +536,8 @@ def apply_machine_learning_model(model_path,frame,t):
 
 @app.route("/upload-garbage-video",methods=['POST'])
 def video_trash():
-    print("Hello")
     video_file = request.files['file']
-    if video_file:
-        print("i am there")
+    print("Tpe of file",type(video_file))
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
@@ -587,15 +585,16 @@ def video_trash():
 @app.route("/upload-threat-image", methods=['GET'])
 def threat_detector_image():
     image_file = request.files['file']
-    # Check if the file has a name
-    if image_file.filename == '':
-        return "No selected file"
+    file_path = os.path.join('img', image_file.filename)
+    image_file.save(file_path)
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("fire-smoke-detection-eozii")
     model = project.version(1).model
-    print(model.predict(image_file, confidence=40, overlap=30).json())
-    
-    return "done"
+    # print(model.predict(image_file, confidence=40, overlap=30).json())
+    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/threat_prediction.jpg')
+    response = {"image": "success"}
+    print("Response",response)
+    return jsonify(response)
 
 @app.route("/upload-threat-video", methods=['GET'])
 def threat_detector_video():
@@ -626,28 +625,32 @@ def threat_detector_video():
     cap.release()
     return "done"
 
-@app.route("/upload-crowd-image", methods=['GET'])
+@app.route("/upload-crowd-image", methods=['POST'])
 def crowd_detector_image():
     image_file = request.files['file']
+    file_path = os.path.join('img', image_file.filename)
+    image_file.save(file_path)
     # Check if the file has a name
-    if image_file.filename == '':
-        return "No selected file"
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
-    print(model.predict(image_file, confidence=40, overlap=30).json())
-    
-    return "done"
+    # print(model.predict(file_path, confidence=40, overlap=30).json())
+    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
+    response = {"image": "success"}
+    print("Response",response)
+    return jsonify(response)
 
-@app.route("/upload-crowd-video", methods=['GET'])
+@app.route("/upload-crowd-video", methods=['POST'])
 def crowd_detector_video():
-    video_file = "garbage4.mp4"
+    video_file = request.files['file']
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
     cnt = 0
     c1 = 0
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
-    cap = cv2.VideoCapture(video_file)
+    cap = cv2.VideoCapture(file_path)
     
     while cap.isOpened():
         success, frame = cap.read()

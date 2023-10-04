@@ -42,7 +42,7 @@ export default function TrashDetection() {
       // Create a FormData object to send the file to the server
       const formData = new FormData();
       formData.append('file', selectedFile);
-
+      console.log(selectedFile)
       // Make a POST request to your server API to process the image
       fetch('http://127.0.0.1:5000/upload-garbage-video', {
         method: 'POST',
