@@ -533,9 +533,16 @@ def apply_machine_learning_model(model_path,frame,t):
     proc_frame=results[0].plot()
     return proc_frame,t,cleanliness_percentage
 
+@app.route("/upload-garbage-image",methods=['GET'])
+def garbage_detector_image():
+    image_file = 'garbage.jpg'
+    model_path = 'garbage_detector_1.pt'
+    model = YOLO(model_path)
+    results = model(image_file, stream=True, save=True)
+    proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=image_file)
 
 @app.route("/upload-garbage-video",methods=['GET'])
-def video_trash():
+def garbage_detector_video():
     # video_file = request.files['file']
     video_file = "garbage4.mp4"
     model_path = 'garbage_detector_1.pt'
