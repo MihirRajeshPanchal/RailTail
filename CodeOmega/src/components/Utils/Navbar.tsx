@@ -1,5 +1,4 @@
-'use client'
-
+import React, { useState } from 'react';
 import {
   Box,
   Flex,
@@ -11,17 +10,16 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
-} from '@chakra-ui/react'
-import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
-import React from 'react'
+} from '@chakra-ui/react';
+import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
 
 interface Props {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const NavLink = (props: Props) => {
-  const { children } = props
+  const { children } = props;
 
   return (
     <Box
@@ -32,15 +30,22 @@ const NavLink = (props: Props) => {
       _hover={{
         textDecoration: 'none',
         bg: useColorModeValue('gray.200', 'gray.700'),
-      }}>
+      }}
+    >
       {children}
     </Box>
-  )
+  );
 }
 
 export default function Simple() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const { colorMode, toggleColorMode } = useColorMode()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const toggleAdminUser = () => {
+    setIsAdmin(!isAdmin);
+  };
+
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -53,41 +58,54 @@ export default function Simple() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={'center'}>
-          <Link to="/Homepage">
-        <Image src="/logo.png" alt="My Logo" width={150} />
-      </Link>
+            <Link to="/Homepage">
+              <Image src="/logo.png" alt="My Logo" width={150} />
+            </Link>
           </HStack>
           <Flex alignItems={'center'} paddingRight={20}>
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
-              <NavLink key="Homepage">
-                <Link to="/Homepage">Home</Link>
-              </NavLink>
-              <NavLink key="DashBoard">
-                <Link to="/DashBoard">Dashboard</Link>
-              </NavLink>
-              <NavLink key="ML">
-                <Link to="/ML">ML</Link>
-              </NavLink>
-              <NavLink key="OpenCV">
-                <Link to="/OpenCV">OpenCV</Link>
-              </NavLink>
-              <NavLink key="Quiz">
-                <Link to="/Quiz">Quiz</Link>
-              </NavLink>
-              <NavLink key="VideoCall">
-                <Link to="/VideoCall">VideoCall</Link>
-              </NavLink>
-              <NavLink key="Forums">
-                <Link to="/Forums">Forums</Link>
-              </NavLink>
-              <NavLink key="AboutUs">
-                <Link to="/AboutUs">About Us</Link>
-              </NavLink>
-              <NavLink key="ContactUs">
-                <Link to="/ContactUs">Contact Us</Link>
-              </NavLink>
+              {isAdmin ? (
+                <>
+                  <NavLink key="Homepage">
+                    <Link to="/Homepage">Home</Link>
+                  </NavLink>
+                  <NavLink key="OpenCV">
+                    <Link to="/OpenCV">OpenCV</Link>
+                  </NavLink>
+                </>
+              ) : (
+                <>
+                  <NavLink key="Homepage">
+                    <Link to="/Homepage">Home</Link>
+                  </NavLink>
+                  <NavLink key="DashBoard">
+                    <Link to="/DashBoard">Dashboard</Link>
+                  </NavLink>
+                  <NavLink key="Report">
+                    <Link to="/Report">Report</Link>
+                  </NavLink>
+                  <NavLink key="FeedBack">
+                    <Link to="/FeebBack">Feedback</Link>
+                  </NavLink>
+                  <NavLink key="Stations">
+                    <Link to="/Stations">Stations</Link>
+                  </NavLink>
+                  <NavLink key="Forums">
+                    <Link to="/Forums">Forums</Link>
+                  </NavLink>
+                  <NavLink key="AboutUs">
+                    <Link to="/AboutUs">About Us</Link>
+                  </NavLink>
+                  <NavLink key="ContactUs">
+                    <Link to="/ContactUs">Contact Us</Link>
+                  </NavLink>
+                </>
+              )}
               <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              </Button>
+              <Button onClick={toggleAdminUser}>
+                {isAdmin ? 'Switch to User' : 'Switch to Admin'}
               </Button>
             </HStack>
           </Flex>
@@ -96,33 +114,40 @@ export default function Simple() {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-            <NavLink key="Homepage">
-                <Link to="/Homepage">Home</Link>
-              </NavLink>
-              <NavLink key="DashBoard">
-                <Link to="/DashBoard">DashBoard</Link>
-              </NavLink>
-              <NavLink key="ML">
-                <Link to="/ML">ML</Link>
-              </NavLink>
-              <NavLink key="OpenCV">
-                <Link to="/OpenCV">OpenCV</Link>
-              </NavLink>
-              <NavLink key="Quiz">
-                <Link to="/Quiz">Quiz</Link>
-              </NavLink>
-              <NavLink key="VideoCall">
-                <Link to="/VideoCall">VideoCall</Link>
-              </NavLink>
-              <NavLink key="Forums">
-                <Link to="/Forums">Forums</Link>
-              </NavLink>
-              <NavLink key="AboutUs">
-                <Link to="/AboutUs">About Us</Link>
-              </NavLink>
-              <NavLink key="ContactUs">
-                <Link to="/ContactUs">Contact Us</Link>
-              </NavLink>
+              {isAdmin ? (
+                <>
+                  <NavLink key="Homepage">
+                    <Link to="/Homepage">Home</Link>
+                  </NavLink>
+                  <NavLink key="OpenCV">
+                    <Link to="/OpenCV">OpenCV</Link>
+                  </NavLink>
+                </>
+              ) : (
+                <>
+                  <NavLink key="DashBoard">
+                    <Link to="/DashBoard">DashBoard</Link>
+                  </NavLink>
+                  <NavLink key="ML">
+                    <Link to="/ML">ML</Link>
+                  </NavLink>
+                  <NavLink key="Quiz">
+                    <Link to="/Quiz">Quiz</Link>
+                  </NavLink>
+                  <NavLink key="VideoCall">
+                    <Link to="/VideoCall">VideoCall</Link>
+                  </NavLink>
+                  <NavLink key="Forums">
+                    <Link to="/Forums">Forums</Link>
+                  </NavLink>
+                  <NavLink key="AboutUs">
+                    <Link to="/AboutUs">About Us</Link>
+                  </NavLink>
+                  <NavLink key="ContactUs">
+                    <Link to="/ContactUs">Contact Us</Link>
+                  </NavLink>
+                </>
+              )}
               <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
@@ -130,7 +155,6 @@ export default function Simple() {
           </Box>
         ) : null}
       </Box>
-
     </>
-  )
+  );
 }
