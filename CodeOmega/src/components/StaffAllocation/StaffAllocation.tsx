@@ -29,8 +29,10 @@ export default function Staffallocation() {
   const [dataArray, setDataArray] = useState([]);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [platformNumber, setPlatformNumber] = useState('');
+  const [selectedMemberId, setSelectedMemberId] = useState(null);
 
-  const openAssignModal = () => {
+  const openAssignModal = (memberId) => {
+    setSelectedMemberId(memberId);
     setIsAssignModalOpen(true);
   };
 
@@ -39,13 +41,27 @@ export default function Staffallocation() {
   };
 
   const handleAssign = () => {
-    // Add your logic here to assign the staff member to the platform with the platformNumber
-    // After performing the assignment, close the modal
-    closeAssignModal();
+    const data = {
+      platformNumber: platformNumber, // Include the platformNumber in the request body
+    };
+  
+    fetch(`http://127.0.0.1:5000/assign/${selectedMemberId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        console.log("my selectes id", selectedMemberId);
+        closeAssignModal();
+      })
+      .catch((error) => {
+        console.error('Error toggling assignment:', error);
+      });
   };
 
   useEffect(() => {
-    // Fetch data from the API
     fetch('http://127.0.0.1:5000/getstaffs')
       .then((response) => {
         if (!response.ok) {
@@ -127,7 +143,7 @@ export default function Staffallocation() {
                   />
                 </HStack>
               </Center>
-              <Button colorScheme="green" size="lg" my={5} px={6} onClick={openAssignModal}>
+              <Button colorScheme="green" size="lg" my={5} px={6} onClick={() => openAssignModal(data.id)}>
                 Allot
               </Button>
             </Box>

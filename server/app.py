@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from pymongo import MongoClient
 import cv2
+import mail
 import ultralytics
 
 load_dotenv()
@@ -32,11 +33,11 @@ def generate_video():
         # processed_frame = apply_machine_learning_model(frame)
 
         # Encode the processed frame as JPEG
-        _, buffer = cv2.imencode('.jpg', processed_frame)
-        frame_bytes = buffer.tobytes()
+        # _, buffer = cv2.imencode('.jpg', processed_frame)
+        # frame_bytes = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        # yield (b'--frame\r\n'
+        #        b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
     screen_capture.release()
     cv2.destroyAllWindows()
@@ -415,10 +416,35 @@ def video_trash():
     return "done"
 
 
-
 @app.route("/live-video")
 def live_video():
     return Response(generate_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route("/assign/<member_id>", methods=["POST"])
+def toggle_assignment(member_id):
+    try:
+        data = request.get_json()
+        platform = data.get('platformNumber', '')
+        staff_member = staff_member_collection.get_staff_member_by_id(int(member_id))
+        staff_name = staff_member.get("name", "")
+        staff_email = staff_member.get("email", "")
+        if not staff_member:
+            return jsonify({"error": "Staff member not found"}), 404
+        current_assigned = staff_member.get("assigned", False)
+        new_assigned = not current_assigned
+        print(new_assigned)
+        staff_collec = MongoDB("staff_member")
+        result=staff_collec.update_one({"id": int(member_id)}, {"$set": {"assigned": new_assigned}})
+        mail.send_mail(staff_email,1,staff_name,platform)
+        if result:
+            return jsonify({"message": "Assignment toggled successfully"})
+        else:
+            return jsonify({"error": "Assignment toggle failed"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
