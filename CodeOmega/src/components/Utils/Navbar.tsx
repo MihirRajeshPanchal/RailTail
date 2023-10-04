@@ -67,37 +67,49 @@ export default function Simple() {
               {isAdmin ? (
                 <>
                   <NavLink key="Homepage">
-                    <Link to="/Homepage">Home</Link>
+                    <Link to="/homepage">Home</Link>
                   </NavLink>
-                  <NavLink key="OpenCV">
-                    <Link to="/OpenCV">OpenCV</Link>
+                  <NavLink key="Crowd Detetction">
+                    <Link to="/crowddetection">Crowd Detection</Link>
+                  </NavLink>
+                  <NavLink key="Trash Detetction">
+                    <Link to="/trashdetection">Trash Detection</Link>
+                  </NavLink>
+                  <NavLink key="Crime Detetction">
+                    <Link to="/crimedetection">Crime Detection</Link>
+                  </NavLink>
+                  <NavLink key="Staff Allocation">
+                    <Link to="/staffallocation">Staff Allocation</Link>
+                  </NavLink>
+                  <NavLink key="Police Allocation">
+                    <Link to="/policeallocation">Police Allocation</Link>
                   </NavLink>
                 </>
               ) : (
                 <>
                   <NavLink key="Homepage">
-                    <Link to="/Homepage">Home</Link>
+                    <Link to="/homepage">Home</Link>
                   </NavLink>
                   <NavLink key="DashBoard">
-                    <Link to="/DashBoard">Dashboard</Link>
-                  </NavLink>
-                  <NavLink key="Report">
-                    <Link to="/Report">Report</Link>
-                  </NavLink>
-                  <NavLink key="FeedBack">
-                    <Link to="/FeebBack">Feedback</Link>
+                    <Link to="/dashboard">Dashboard</Link>
                   </NavLink>
                   <NavLink key="Stations">
-                    <Link to="/Stations">Stations</Link>
+                    <Link to="/stations">Stations</Link>
+                  </NavLink>
+                  <NavLink key="Complain">
+                    <Link to="/complain">File Complaint</Link>
+                  </NavLink>
+                  <NavLink key="FeedBack">
+                    <Link to="/feedback">Feedback</Link>
                   </NavLink>
                   <NavLink key="Forums">
-                    <Link to="/Forums">Forums</Link>
-                  </NavLink>
-                  <NavLink key="AboutUs">
-                    <Link to="/AboutUs">About Us</Link>
+                    <Link to="/forums">Forums</Link>
                   </NavLink>
                   <NavLink key="ContactUs">
-                    <Link to="/ContactUs">Contact Us</Link>
+                    <Link to="/contactus">Contact Us</Link>
+                  </NavLink>
+                  <NavLink key="AboutUs">
+                    <Link to="/aboutus">About Team</Link>
                   </NavLink>
                 </>
               )}
@@ -114,42 +126,60 @@ export default function Simple() {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {isAdmin ? (
+            {isAdmin ? (
                 <>
                   <NavLink key="Homepage">
-                    <Link to="/Homepage">Home</Link>
+                    <Link to="/homepage">Home</Link>
                   </NavLink>
-                  <NavLink key="OpenCV">
-                    <Link to="/OpenCV">OpenCV</Link>
+                  <NavLink key="Crowd Detetction">
+                    <Link to="/crowddetection">Crowd Detection</Link>
+                  </NavLink>
+                  <NavLink key="Trash Detetction">
+                    <Link to="/trashdetection">Trash Detection</Link>
+                  </NavLink>
+                  <NavLink key="Crime Detetction">
+                    <Link to="/crimedetection">Crime Detection</Link>
+                  </NavLink>
+                  <NavLink key="Staff Allocation">
+                    <Link to="/staffallocation">Staff Allocation</Link>
+                  </NavLink>
+                  <NavLink key="Police Allocation">
+                    <Link to="/policeallocation">Police Allocation</Link>
                   </NavLink>
                 </>
               ) : (
                 <>
+                  <NavLink key="Homepage">
+                    <Link to="/homepage">Home</Link>
+                  </NavLink>
                   <NavLink key="DashBoard">
-                    <Link to="/DashBoard">DashBoard</Link>
+                    <Link to="/dashBoard">Dashboard</Link>
                   </NavLink>
-                  <NavLink key="ML">
-                    <Link to="/ML">ML</Link>
+                  <NavLink key="Stations">
+                    <Link to="/stations">Stations</Link>
                   </NavLink>
-                  <NavLink key="Quiz">
-                    <Link to="/Quiz">Quiz</Link>
+                  <NavLink key="Complain">
+                    <Link to="/complain">File Complain</Link>
                   </NavLink>
-                  <NavLink key="VideoCall">
-                    <Link to="/VideoCall">VideoCall</Link>
+                  <NavLink key="FeedBack">
+                    <Link to="/feebBack">Feedback</Link>
                   </NavLink>
                   <NavLink key="Forums">
-                    <Link to="/Forums">Forums</Link>
-                  </NavLink>
-                  <NavLink key="AboutUs">
-                    <Link to="/AboutUs">About Us</Link>
+                    <Link to="/forums">Forums</Link>
                   </NavLink>
                   <NavLink key="ContactUs">
-                    <Link to="/ContactUs">Contact Us</Link>
+                    <Link to="/contactUs">Contact Us</Link>
+                  </NavLink>
+                  <NavLink key="AboutUs">
+                    <Link to="/aboutUs">About Team</Link>
                   </NavLink>
                 </>
               )}
               <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              </Button>
+              <Button onClick={toggleAdminUser}>
+                {isAdmin ? 'Switch to User' : 'Switch to Admin'}
               </Button>
             </Stack>
           </Box>
