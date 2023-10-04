@@ -1,9 +1,10 @@
-from flask import Flask,jsonify,request
+from flask import Flask,jsonify,request,Response
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 from pymongo import MongoClient
-from bson import ObjectId
+import cv2
+import ultralytics
 
 load_dotenv()
 
@@ -16,6 +17,29 @@ def MongoDB(collection_name):
     db = client.get_database('TSEC')
     collection = db.get_collection(collection_name)
     return collection
+
+def generate_video():
+    # Create a VideoCapture object to capture the screen
+    screen_capture = cv2.VideoCapture(0)  # Change the index to capture a specific screen if necessary
+
+    while True:
+        success, frame = screen_capture.read()
+        if not success:
+            break
+
+        # Here, you can apply your machine learning model to process each frame
+        # Replace the following line with your model processing logic
+        # processed_frame = apply_machine_learning_model(frame)
+
+        # Encode the processed frame as JPEG
+        _, buffer = cv2.imencode('.jpg', processed_frame)
+        frame_bytes = buffer.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
+    screen_capture.release()
+    cv2.destroyAllWindows()
 
 class CrowdSchema:
     def __init__(self, collection_name):
@@ -357,7 +381,6 @@ def get_staff_members():
 
         # Convert the list of staff members to a JSON response
         response = {"staff_members": staff_members_serializable}
-        print(response)
         return jsonify(response), 200  # HTTP status code 200 for OK
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Internal Server Error
@@ -376,10 +399,26 @@ def get_police():
 
         # Convert the list of staff members to a JSON response
         response = {"police": police_serializable}
-        print(response)
         return jsonify(response), 200  # HTTP status code 200 for OK
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Internal Server Error
+
+@app.route("/video-trash",methods=['GET'])
+def video_trash():
+    if 'file' not in request.files:
+        return "No video file provided", 400
+    video_file = request.files['file']
+    ultralytics.checks()
+    from ultralytics import YOLO
+    model = YOLO('yolov8n.pt')
+    result = model(video_file)
+    return "done"
+
+
+
+@app.route("/live-video")
+def live_video():
+    return Response(generate_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
