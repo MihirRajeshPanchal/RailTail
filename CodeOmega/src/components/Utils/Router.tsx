@@ -12,13 +12,13 @@ import FeedBack from '../FeedBack/FeedBack';
 import Stations from '../Stations/Stations';
 import Forums from '../Forums/Forums';
 import AboutUs from '../AboutUs/Core'
+import VideoCall from '../VideoCall/VideoCall';
+import RoomPage from '../VideoCall/RoomPage'; 
 // import AboutUs from '../AboutUs/Content'
 // import AboutUs from '../AboutUs/Events'
 // import AboutUs from '../AboutUs/EventsTimeLine'
 import ContactUs from '../ContactUs/ContactUs'
 // import Dashboard from '../Dashboard/Dashboard';
-// import VideoCall from '../VideoCall/VideoCall';
-// import RoomPage from '../VideoCall/RoomPage';
 
 
 //admin
@@ -40,7 +40,8 @@ const RoutesConfig = () => {
       <Route path="/complaintcrimes" element={<Crime/>} />
       <Route path="/complaintcleanliness" element={<Cleanliness/>} />
       <Route path="/feedback" element={<FeedBack/>} />
-      <Route path="/forums" element={<Forums/>} />
+      <Route path="/videoCall" element={<VideoCall />} />
+      <Route path="/room/:roomId" element={<RoomPage />} />
       <Route path="/aboutus" element={<AboutUs />} />
       <Route path="/contactus" element={<ContactUs />} />
 
