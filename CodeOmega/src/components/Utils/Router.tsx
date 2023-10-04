@@ -1,30 +1,54 @@
 // routes.js
 import React from 'react';
 import { Route, Routes } from 'react-router-dom'; 
+
 import Homepage from '../Home/Homepage';
+// user 
+import Dashboard from '../Dashboard/Projects';
+import Complaint from '../Complaint/Complaint';
+import FeedBack from '../FeedBack/FeedBack';
+import Stations from '../Stations/Stations';
+import Forums from '../Forums/Forums';
 import AboutUs from '../AboutUs/Core'
 // import AboutUs from '../AboutUs/Content'
 // import AboutUs from '../AboutUs/Events'
 // import AboutUs from '../AboutUs/EventsTimeLine'
 import ContactUs from '../ContactUs/ContactUs'
 // import Dashboard from '../Dashboard/Dashboard';
-import Dashboard from '../Dashboard/Projects';
-import VideoCall from '../VideoCall/VideoCall';
-import RoomPage from '../VideoCall/RoomPage';
+// import VideoCall from '../VideoCall/VideoCall';
+// import RoomPage from '../VideoCall/RoomPage';
+
+
+//admin
+import CrowdDetection from '../CrowdDetection/CrowdDetection'
+import TrashDetection from '../TrashDetection/TrashDetection';
+import CrimeDetection from '../CrimeDetection/CrimeDetection';
+import StaffAllocation from '../StaffAllocation/StaffAllocation';
+import PoliceAllocation from '../PoliceAllocation/PoliceAllocation';
 const RoutesConfig = () => {
   return (
     <Routes>
       <Route path="/" element={<Homepage/>} />
-      <Route path="/Homepage" element={<Homepage/>} />
-      <Route path="/Dashboard" element={<Dashboard/>} />
-      {/* <Route path="/ML" element={<Core />} />
-      <Route path="/OpenCV" element={<EventsTimeline />} />
-      <Route path="/Quiz" element={<EventsTimeline />} /> */}
-      <Route path="/VideoCall" element={<VideoCall />} />
-      <Route path="/room/:roomId" element={<RoomPage />} />
-      {/* <Route path="/Forums" element={<ResearchPaper />} /> */}
-      <Route path="/AboutUs" element={<AboutUs />} />
-      <Route path="/ContactUs" element={<ContactUs />} />
+      <Route path="/homepage" element={<Homepage/>} />
+      <Route path="/dashboard" element={<Dashboard/>} />
+
+      {/* user  */}
+      <Route path="/stations" element={<Stations/>} />
+      <Route path="/complain" element={<Complaint/>} />
+      <Route path="/feedback" element={<FeedBack/>} />
+      <Route path="/forums" element={<Forums/>} />
+      <Route path="/aboutus" element={<AboutUs />} />
+      <Route path="/contactus" element={<ContactUs />} />
+
+      {/* admin  */}
+      <Route path="/crowddetection" element={<CrowdDetection/>} />
+      <Route path="/trashdetection" element={<TrashDetection/>} />
+      <Route path="/crimedetection" element={<CrimeDetection/>} />
+      <Route path="/staffallocation" element={<StaffAllocation/>} />
+      <Route path="/policeallocation" element={<PoliceAllocation/>} />
+
+      {/* <Route path="/VideoCall" element={<VideoCall />} />
+      <Route path="/room/:roomId" element={<RoomPage />} /> */}
     </Routes>
   );
 };
