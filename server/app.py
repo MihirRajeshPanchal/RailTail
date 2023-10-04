@@ -320,21 +320,12 @@ def add_complaint(type):
             line = data["line"]
             description=data["description"]
             
-            # Extract the "location" field with x and y coordinates
-            location = data.get("location", {})
-            x_coordinate = location.get("x", None)
-            y_coordinate = location.get("y", None)
-
             # Create the complaint document
             complaint = {
                 "type": complaint_type,
                 "station": station,
                 "line": line,
                 "description": description,
-                "location": {
-                    "x": x_coordinate,
-                    "y": y_coordinate
-                }
             }
             complaints_collection = MongoDB('complaints')
             # Insert the complaint document into MongoDB

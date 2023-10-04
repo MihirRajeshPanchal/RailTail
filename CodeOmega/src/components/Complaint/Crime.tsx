@@ -41,14 +41,12 @@ const CONFETTI_DARK = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 export default function Crime() {
   
   const [formData, setFormData] = useState({
-    complaint_type: 'Crime',
     station: '',
     line: '',
     description: '',
-    location: [0,0]
   });
 
-  // Function to update form data when input values change
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -57,10 +55,18 @@ export default function Crime() {
     });
   };
 
-  // Function to handle form submission
+
   const handleSubmit = () => {
-    console.log('Form Data:', formData);
-    // You can perform additional actions with the form data here
+    fetch(`http://127.0.0.1:5000/add_complaint/crime`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .catch((error) => {
+        console.error('Error toggling assignment:', error);
+      });
   };
   return (
     <Flex
