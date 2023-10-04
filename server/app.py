@@ -534,10 +534,12 @@ def apply_machine_learning_model(model_path,frame,t):
     return proc_frame,t,cleanliness_percentage
 
 
-@app.route("/upload-garbage-video",methods=['GET'])
+@app.route("/upload-garbage-video",methods=['POST'])
 def video_trash():
+    print("Hello")
     video_file = request.files['file']
-    video_file = "garbage4.mp4"
+    if video_file:
+        print("i am there")
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
@@ -580,11 +582,14 @@ def video_trash():
             }
         complaints_collection = MongoDB('complaints')
         result = complaints_collection.insert_one(complaint)
-    return "done"
+    return {{"message": "success"}}
 
 @app.route("/upload-threat-image", methods=['GET'])
 def threat_detector_image():
-    image_file = "garbage4.jpg"
+    image_file = request.files['file']
+    # Check if the file has a name
+    if image_file.filename == '':
+        return "No selected file"
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("fire-smoke-detection-eozii")
     model = project.version(1).model
@@ -623,7 +628,10 @@ def threat_detector_video():
 
 @app.route("/upload-crowd-image", methods=['GET'])
 def crowd_detector_image():
-    image_file = "garbage4.jpg"
+    image_file = request.files['file']
+    # Check if the file has a name
+    if image_file.filename == '':
+        return "No selected file"
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
@@ -703,7 +711,7 @@ def perform_sentiment_analysis():
 
 
 @app.route("/get_crime_complaints", methods=["GET"])
-def get_complaints():
+def get_crime_complaints():
     # Fetch all documents from the "complaints" collection
     complaints_collection = MongoDB('complaints')
     complaints = list(complaints_collection.find({"type": "crime"}))
@@ -714,7 +722,7 @@ def get_complaints():
     return jsonify(complaints) 
 
 @app.route("/get_clean_complaints", methods=["GET"])
-def get_complaints():
+def get_clean_complaints():
     # Fetch all documents from the "complaints" collection
     complaints_collection = MongoDB('complaints')
     complaints = list(complaints_collection.find({"type": "cleanliness"}))
