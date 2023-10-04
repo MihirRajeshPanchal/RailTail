@@ -15,13 +15,17 @@ import { Link } from 'react-router-dom';
 import video from "../../assets/video.jpeg"
 import image from "../../assets/image.png"
 import live from "../../assets/live.png"
+import { useRef, useState } from 'react';
+import  Loader  from '../Utils/Loader'
+import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import React from 'react';
 
 export default function TrashDetection() {
   const fileInputVideoRef = useRef(null);
   const fileInputImageRef = useRef(null);
-
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleComputeImageClick = () => {
     // Trigger the file input when the "Compute" button is clicked
@@ -40,6 +44,7 @@ export default function TrashDetection() {
   const handleImageFileChange = (event) => {
     const selectedFile = event.target.files[0]; // Get the selected file
 
+    setIsLoading(true);
     if (selectedFile) {
       // Create a FormData object to send the file to the server
       const formData = new FormData();
@@ -54,11 +59,14 @@ export default function TrashDetection() {
         .then((data) => {
           console.log('Response from server:', data);
           // Handle the response data as needed
+          setIsLoading(false); // Hide the loader
+          navigate('/trashimageoutput');
         })
         .catch((error) => {
           console.error('Error:', error);
           // Handle errors
         });
+        setIsLoading(false);
     }
   };
 
@@ -89,6 +97,7 @@ export default function TrashDetection() {
 
   return (
     <>
+    {isLoading && <Loader />}
     <Center>
         <Heading
           px={{ base: 6, md: 150 }}
