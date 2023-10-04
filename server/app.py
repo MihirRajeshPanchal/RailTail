@@ -25,6 +25,58 @@ def MongoDB(collection_name):
 
 
 
+def apply_machine_learning_model(model,frame):
+    from ultralytics import YOLO
+    # model = YOLO('yolov8l.pt')
+    results=model(frame)
+    l=[]
+    for result in results:
+        l.append(result.tojson())
+
+    import json
+
+    # Your list of dictionaries as a string within a list
+    data_str = l 
+    # Parse the string into a Python list
+    data_list = json.loads(data_str[0])
+    # Save the list to a JSON file
+    with open('output.json', 'w') as json_file:
+        json.dump(data_list, json_file, indent=4)
+    # Optionally, you can print the saved JSON data
+    with open('output.json', 'r') as json_file:
+        saved_data = json.load(json_file)
+        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
+
+    def calculate_cleanliness_percentage(data):
+        total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
+        trash_count = 0
+
+        for prediction in data:
+            x1, y1, x2, y2, confidence = (
+                prediction['box']['x1'],
+                prediction['box']['y1'],
+                prediction['box']['x2'],
+                prediction['box']['y2'],
+                prediction['confidence']
+            )
+
+            # Calculate dynamic object size based on position
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (1920 * 1080)  # Assuming frame size is 1920x1080
+            trash_count += 1 - normalized_area  # Subtract normalized area from 1
+
+        # Calculate cleanliness percentage
+        cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
+        return cleanliness_percentage
+
+    # Example usage with saved_data
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
+    print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
+    proc_frame=results[0].plot()
+    return proc_frame, cleanliness_percentage
+
+
+
+
 def generate_video():
     # Create a VideoCapture object to capture the screen
     screen_capture = cv2.VideoCapture(0)  # Change the index to capture a specific screen if necessary
@@ -36,7 +88,7 @@ def generate_video():
 
         # Here, you can apply your machine learning model to process each frame
         # Replace the following line with your model processing logic
-        # processed_frame = apply_machine_learning_model(frame)
+        processed_frame, cleanliness = apply_machine_learning_model(model,frame)
 
         # Encode the processed frame as JPEG
     #     _, buffer = cv2.imencode('.jpg', processed_frame)
@@ -427,7 +479,8 @@ def video_save():
     out.release()
 
 
-def apply_machine_learning_model(model_path,frame):
+def apply_machine_learning_model(model_path,frame,t):
+    
     model = YOLO(model_path)
     results=model(frame)
     l=[]
@@ -458,7 +511,8 @@ def apply_machine_learning_model(model_path,frame):
                 prediction['box']['y2'],
                 prediction['confidence']
             )
-
+            if confidence > 70:
+                t=True
             # Calculate dynamic object size based on position
             normalized_area = ((x2 - x1) * (y2 - y1)) / (320 * 320)  # Assuming frame size is 1920x1080
             trash_count += normalized_area  # Subtract normalized area from 1
@@ -474,7 +528,7 @@ def apply_machine_learning_model(model_path,frame):
     print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     # print(cleanliness_percentage)
     proc_frame=results[0].plot()
-    return proc_frame
+    return proc_frame,t,cleanliness_percentage
 
 
 @app.route("/video-trash",methods=['GET'])
@@ -485,25 +539,38 @@ def video_trash():
     cnt=0
     c1=0
     cap = cv2.VideoCapture(video_file)
-    # while cap.isOpened():
-    #     success, frame = cap.read()
-    #     if c1%5==0:
-    #         print(c1)
-    #         if success:
-    #             frame=cv2.resize(frame,(320,320))
-    #             ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
-    #             cv2.imshow("YOLOv8 Inference", ann_frame)
-    #             cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
-    #             cnt+=1
-    #             if cv2.waitKey(1) & 0xFF == ord("q"):
-    #                 break
-    #         else:
-    #             break
-    #     else:
-    #         pass
-    #     c1 += 1
-    video_save()        
+    t=False
+
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+    fps = int(cap.get(5))
+    print("FPPPSSSSS:::::::::::::::::::::::::::",fps)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_video = cv2.VideoWriter('output_video.mp4', fourcc, 15, (frame_width, frame_height))
+
+
+    while cap.isOpened():
+        success, frame = cap.read()
+        if c1%5==0:
+            print(c1)
+            if success:
+                # frame=cv2.resize(frame,(320,320))
+                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
+                cv2.imshow("YOLOv8 Inference", ann_frame)
+                # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                output_video.write(ann_frame)
+                cnt+=1
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
+            else:
+                break
+        else:
+            pass
+        c1 += 1
+    # video_save()        
     cap.release()
+
+    output_video.release()
     cv2.destroyAllWindows()
     
     
