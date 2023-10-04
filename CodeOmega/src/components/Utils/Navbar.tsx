@@ -81,6 +81,9 @@ export default function Simple() {
                   <NavLink key="Video Meet">
                     <Link to="/videocall">Video Call</Link>
                   </NavLink>
+                  <NavLink key="TC Allocation">
+                    <Link to="/tcallocation">TC Allocation</Link>
+                  </NavLink>
                   <NavLink key="Staff Allocation">
                     <Link to="/staffallocation">Staff Allocation</Link>
                   </NavLink>
@@ -142,6 +145,9 @@ export default function Simple() {
                   </NavLink>
                   <NavLink key="Video Meet">
                     <Link to="/videocall">Video Call</Link>
+                  </NavLink>
+                  <NavLink key="TC Allocation">
+                    <Link to="/tcallocation">TC Allocation</Link>
                   </NavLink>
                   <NavLink key="Staff Allocation">
                     <Link to="/staffallocation">Staff Allocation</Link>
