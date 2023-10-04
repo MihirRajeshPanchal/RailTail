@@ -10,8 +10,10 @@ import {
   useColorModeValue,
   HStack,
   IconButton,
+  Avatar,
 } from '@chakra-ui/react';
 import { BsTelephone, BsMailbox } from 'react-icons/bs';
+import staffimg from "../../assets/staff.png"
 
 export default function Staffallocation() {
   const [dataArray, setDataArray] = useState([]);
@@ -67,6 +69,7 @@ export default function Staffallocation() {
               p={6}
               textAlign={'center'}
             >
+              <Avatar size={'xl'} src={staffimg} mb={4} pos={'relative'} />
               <Heading fontSize={'2xl'} fontFamily={'body'}>
                 {data.name}
               </Heading>
