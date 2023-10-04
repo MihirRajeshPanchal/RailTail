@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/react';
 import { BsTelephone, BsMailbox } from 'react-icons/bs';
 import staffimg from "../../assets/staff.png"
-
 export default function Staffallocation() {
   const [dataArray, setDataArray] = useState([]);
 

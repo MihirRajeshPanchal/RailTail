@@ -362,5 +362,24 @@ def get_staff_members():
     except Exception as e:
         return jsonify({"error": str(e)}), 500  # Internal Server Error
 
+@app.route("/getpolice", methods=["GET"])
+def get_police():
+    try:
+        # Retrieve all staff members from the "staff_member" collection
+        police = police_collection.get_all_police_members()
+
+        # Convert ObjectId to string for each staff member
+        police_serializable = []
+        for police in police:
+            police['_id'] = str(police['_id'])  # Convert ObjectId to string
+            police_serializable.append(police)
+
+        # Convert the list of staff members to a JSON response
+        response = {"police": police_serializable}
+        print(response)
+        return jsonify(response), 200  # HTTP status code 200 for OK
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Internal Server Error
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
