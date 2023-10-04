@@ -380,7 +380,7 @@ def add_complaint(type):
             complaint = {
                 "type": complaint_type,
                 "station": station,
-                "line": line,
+                "platform": line,
                 "description": description,
             }
             complaints_collection = MongoDB('complaints')
@@ -541,23 +541,49 @@ def garbage_detector_image():
     results = model(image_file, stream=True, save=True)
     proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=image_file)
 
+<<<<<<< HEAD
 @app.route("/upload-garbage-video",methods=['GET'])
 def garbage_detector_video():
     # video_file = request.files['file']
     video_file = "garbage4.mp4"
+=======
+@app.route("/upload-garbage-video",methods=['POST'])
+def video_trash():
+    print("Hello")
+    video_file = request.files['file']
+    if video_file:
+        print("i am there")
+>>>>>>> 13b8e3952e6401f9955cb16d75bf43b91370ccbb
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
     cap = cv2.VideoCapture(video_file)
+<<<<<<< HEAD
+=======
+    t=False
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+    fps = int(cap.get(5))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_video = cv2.VideoWriter('output_video.mp4', fourcc, 15, (frame_width, frame_height))
+>>>>>>> 13b8e3952e6401f9955cb16d75bf43b91370ccbb
     while cap.isOpened():
         success, frame = cap.read()
         if c1%5==0:
             print(c1)
             if success:
+<<<<<<< HEAD
                 frame=cv2.resize(frame,(320,320))
                 ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
                 cv2.imshow("YOLOv8 Inference", ann_frame)
                 cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+=======
+                # frame=cv2.resize(frame,(320,320))
+                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
+                cv2.imshow("YOLOv8 Inference", ann_frame)
+                # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                output_video.write(ann_frame)
+>>>>>>> 13b8e3952e6401f9955cb16d75bf43b91370ccbb
                 cnt+=1
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
@@ -568,13 +594,29 @@ def garbage_detector_video():
         c1 += 1
     video_save()        
     cap.release()
+<<<<<<< HEAD
+=======
+    output_video.release()
+>>>>>>> 13b8e3952e6401f9955cb16d75bf43b91370ccbb
     cv2.destroyAllWindows()
-    
-    return "done"
+
+    if t:
+        complaint = {
+                "type": "cleanliness",
+                "station": "Dadar",
+                "platform": "2",
+                "description": "Urgent assistance needed in Cleanliness",
+            }
+        complaints_collection = MongoDB('complaints')
+        result = complaints_collection.insert_one(complaint)
+    return {{"message": "success"}}
 
 @app.route("/upload-threat-image", methods=['GET'])
 def threat_detector_image():
-    image_file = "garbage4.jpg"
+    image_file = request.files['file']
+    # Check if the file has a name
+    if image_file.filename == '':
+        return "No selected file"
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("fire-smoke-detection-eozii")
     model = project.version(1).model
@@ -613,7 +655,10 @@ def threat_detector_video():
 
 @app.route("/upload-crowd-image", methods=['GET'])
 def crowd_detector_image():
-    image_file = "garbage4.jpg"
+    image_file = request.files['file']
+    # Check if the file has a name
+    if image_file.filename == '':
+        return "No selected file"
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
@@ -693,7 +738,28 @@ def perform_sentiment_analysis():
     else:
         return "Please provide text in the 'text' query parameter."
 
-    
+
+@app.route("/get_crime_complaints", methods=["GET"])
+def get_crime_complaints():
+    # Fetch all documents from the "complaints" collection
+    complaints_collection = MongoDB('complaints')
+    complaints = list(complaints_collection.find({"type": "crime"}))
+    for complaint in complaints:
+        complaint['_id'] = str(complaint['_id'])
+    print(complaints)
+    # Serialize the data to JSON and send it as a response
+    return jsonify(complaints) 
+
+@app.route("/get_clean_complaints", methods=["GET"])
+def get_clean_complaints():
+    # Fetch all documents from the "complaints" collection
+    complaints_collection = MongoDB('complaints')
+    complaints = list(complaints_collection.find({"type": "cleanliness"}))
+    for complaint in complaints:
+        complaint['_id'] = str(complaint['_id'])
+    print(complaints)
+    # Serialize the data to JSON and send it as a response
+    return jsonify(complaints)    
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
