@@ -488,6 +488,7 @@ def video_save():
 
 
 def apply_machine_learning_model(model_path,frame):
+    t=False
     model = YOLO(model_path)
     results=model(frame)
     l=[]
@@ -518,7 +519,8 @@ def apply_machine_learning_model(model_path,frame):
                 prediction['box']['y2'],
                 prediction['confidence']
             )
-
+            if confidence > 70:
+                t=True
             # Calculate dynamic object size based on position
             normalized_area = ((x2 - x1) * (y2 - y1)) / (320 * 320)  # Assuming frame size is 1920x1080
             trash_count += normalized_area  # Subtract normalized area from 1
@@ -534,7 +536,7 @@ def apply_machine_learning_model(model_path,frame):
     print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     # print(cleanliness_percentage)
     proc_frame=results[0].plot()
-    return proc_frame
+    return proc_frame,t,cleanliness_percentage
 
 
 @app.route("/video-trash",methods=['GET'])
@@ -545,25 +547,37 @@ def video_trash():
     cnt=0
     c1=0
     cap = cv2.VideoCapture(video_file)
-    # while cap.isOpened():
-    #     success, frame = cap.read()
-    #     if c1%5==0:
-    #         print(c1)
-    #         if success:
-    #             frame=cv2.resize(frame,(320,320))
-    #             ann_frame = apply_machine_learning_model(model_path=model_path,frame=frame)
-    #             cv2.imshow("YOLOv8 Inference", ann_frame)
-    #             cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
-    #             cnt+=1
-    #             if cv2.waitKey(1) & 0xFF == ord("q"):
-    #                 break
-    #         else:
-    #             break
-    #     else:
-    #         pass
-    #     c1 += 1
-    video_save()        
+
+    frame_width = int(cap.get(3))
+    frame_height = int(cap.get(4))
+    fps = int(cap.get(5))
+    print("FPPPSSSSS:::::::::::::::::::::::::::",fps)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_video = cv2.VideoWriter('output_video.mp4', fourcc, 15, (frame_width, frame_height))
+
+
+    while cap.isOpened():
+        success, frame = cap.read()
+        if c1%5==0:
+            print(c1)
+            if success:
+                # frame=cv2.resize(frame,(320,320))
+                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame)
+                cv2.imshow("YOLOv8 Inference", ann_frame)
+                # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                output_video.write(ann_frame)
+                cnt+=1
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
+            else:
+                break
+        else:
+            pass
+        c1 += 1
+    # video_save()        
     cap.release()
+
+    output_video.release()
     cv2.destroyAllWindows()
     
     
