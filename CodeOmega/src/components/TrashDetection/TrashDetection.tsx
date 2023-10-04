@@ -18,7 +18,6 @@ import live from "../../assets/live.png"
 import { useRef, useState } from 'react';
 import  Loader  from '../Utils/Loader'
 import { useNavigate } from 'react-router-dom';
-import { useRef } from 'react';
 import React from 'react';
 
 export default function TrashDetection() {

@@ -685,8 +685,9 @@ def crowd_detector_image():
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("crowd_count_v2")
     model = project.version(2).model
+    results = model.predict(file_path, confidence=40, overlap=30).json()
     model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
-    response = {"image": "success"}
+    response = {"Number of People": len(results['predictions'])}
     print("Response",response)
     return jsonify(response)
 
