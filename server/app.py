@@ -10,18 +10,73 @@ from ultralytics import YOLO
 import json
 import glob
 from transformers import pipeline
+from roboflow import Roboflow
+
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 passw = os.getenv("MONGO_PASS")
+ROBOFLOW_API_KEY = os.getenv("ROBOFLOW_API_KEY")
 connection_string = f"mongodb+srv://codeomega:{passw}@cluster0.hnyk6mi.mongodb.net/?retryWrites=true&w=majority"
 def MongoDB(collection_name):
     client = MongoClient(connection_string)
     db = client.get_database('TSEC')
     collection = db.get_collection(collection_name)
     return collection
+
+
+
+def apply_machine_learning_model(model,frame):
+    from ultralytics import YOLO
+    # model = YOLO('yolov8l.pt')
+    results=model(frame)
+    l=[]
+    for result in results:
+        l.append(result.tojson())
+
+    import json
+
+    # Your list of dictionaries as a string within a list
+    data_str = l 
+    # Parse the string into a Python list
+    data_list = json.loads(data_str[0])
+    # Save the list to a JSON file
+    with open('output.json', 'w') as json_file:
+        json.dump(data_list, json_file, indent=4)
+    # Optionally, you can print the saved JSON data
+    with open('output.json', 'r') as json_file:
+        saved_data = json.load(json_file)
+        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
+
+    def calculate_cleanliness_percentage(data):
+        total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
+        trash_count = 0
+
+        for prediction in data:
+            x1, y1, x2, y2, confidence = (
+                prediction['box']['x1'],
+                prediction['box']['y1'],
+                prediction['box']['x2'],
+                prediction['box']['y2'],
+                prediction['confidence']
+            )
+
+            # Calculate dynamic object size based on position
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (1920 * 1080)  # Assuming frame size is 1920x1080
+            trash_count += 1 - normalized_area  # Subtract normalized area from 1
+
+        # Calculate cleanliness percentage
+        cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
+        return cleanliness_percentage
+
+    # Example usage with saved_data
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
+    print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
+    proc_frame=results[0].plot()
+    return proc_frame, cleanliness_percentage
+
 
 
 
@@ -36,7 +91,7 @@ def generate_video():
 
         # Here, you can apply your machine learning model to process each frame
         # Replace the following line with your model processing logic
-        # processed_frame = apply_machine_learning_model(frame)
+        processed_frame, cleanliness = apply_machine_learning_model(model,frame)
 
         # Encode the processed frame as JPEG
     #     _, buffer = cv2.imencode('.jpg', processed_frame)
@@ -427,7 +482,8 @@ def video_save():
     out.release()
 
 
-def apply_machine_learning_model(model_path,frame):
+def apply_machine_learning_model(model_path,frame,t):
+    
     model = YOLO(model_path)
     results=model(frame)
     l=[]
@@ -458,7 +514,8 @@ def apply_machine_learning_model(model_path,frame):
                 prediction['box']['y2'],
                 prediction['confidence']
             )
-
+            if confidence > 70:
+                t=True
             # Calculate dynamic object size based on position
             normalized_area = ((x2 - x1) * (y2 - y1)) / (320 * 320)  # Assuming frame size is 1920x1080
             trash_count += normalized_area  # Subtract normalized area from 1
@@ -474,10 +531,10 @@ def apply_machine_learning_model(model_path,frame):
     print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     # print(cleanliness_percentage)
     proc_frame=results[0].plot()
-    return proc_frame
+    return proc_frame,t,cleanliness_percentage
 
 
-@app.route("/video-trash",methods=['GET'])
+@app.route("/upload-garbage-video",methods=['GET'])
 def video_trash():
     # video_file = request.files['file']
     video_file = "garbage4.mp4"
@@ -504,11 +561,89 @@ def video_trash():
     #     c1 += 1
     video_save()        
     cap.release()
+
+    output_video.release()
     cv2.destroyAllWindows()
-    
     
     return "done"
 
+@app.route("/upload-threat-image", methods=['GET'])
+def threat_detector_image():
+    image_file = "garbage4.jpg"
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("fire-smoke-detection-eozii")
+    model = project.version(1).model
+    print(model.predict(image_file, confidence=40, overlap=30).json())
+    
+    return "done"
+
+@app.route("/upload-threat-video", methods=['GET'])
+def threat_detector_video():
+    video_file = "garbage4.mp4"
+    cnt = 0
+    c1 = 0
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("fire-smoke-detection-eozii")
+    model = project.version(1).model
+    cap = cv2.VideoCapture(video_file)
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            # If success is False, there are no more frames to read, so break out of the loop
+            break
+        
+        if c1 % 20 == 0:
+            print("Frame:", c1)
+            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
+            jpeg_quality = 95
+            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+
+            if success:
+                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
+                cnt += 1
+        c1 += 1
+    cap.release()
+    return "done"
+
+@app.route("/upload-crowd-image", methods=['GET'])
+def crowd_detector_image():
+    image_file = "garbage4.jpg"
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    print(model.predict(image_file, confidence=40, overlap=30).json())
+    
+    return "done"
+
+@app.route("/upload-crowd-video", methods=['GET'])
+def crowd_detector_video():
+    video_file = "garbage4.mp4"
+    cnt = 0
+    c1 = 0
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    cap = cv2.VideoCapture(video_file)
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+
+            break
+        
+        if c1 % 20 == 0:
+            print("Frame:", c1)
+            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
+            jpeg_quality = 95
+            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+
+            if success:
+                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
+                cnt += 1
+        c1 += 1
+    cap.release()
+    return "done"
 
 @app.route("/live-video")
 def live_video():
