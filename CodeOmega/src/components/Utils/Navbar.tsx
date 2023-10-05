@@ -48,7 +48,7 @@ export default function Simple() {
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={1}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -62,7 +62,7 @@ export default function Simple() {
               <Image src="/logo.png" alt="My Logo" width={150} px={5}/>
             </Link>
           </HStack>
-          <Flex alignItems={'center'} paddingRight={20}>
+          <Flex alignItems={'center'} paddingRight={2}>
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
               {isAdmin ? (
                 <>
@@ -70,16 +70,19 @@ export default function Simple() {
                     <Link to="/homepage">Home</Link>
                   </NavLink>
                   <NavLink key="Crowd Detetction">
-                    <Link to="/crowddetection">Crowd Detection</Link>
+                    <Link to="/crowddetection">CrowdDetection</Link>
                   </NavLink>
                   <NavLink key="Trash Detetction">
-                    <Link to="/trashdetection">Trash Detection</Link>
+                    <Link to="/trashdetection">TrashDetection</Link>
                   </NavLink>
                   <NavLink key="Crime Detetction">
-                    <Link to="/crimedetection">Crime Detection</Link>
+                    <Link to="/crimedetection">CrimeDetection</Link>
+                  </NavLink>
+                  <NavLink key="Fire Detetction">
+                    <Link to="/firedetection">FireDetection</Link>
                   </NavLink>
                   <NavLink key="Video Meet">
-                    <Link to="/videocall">Video Call</Link>
+                    <Link to="/videocall">VideoCall</Link>
                   </NavLink>
                   <NavLink key="TC Allocation">
                     <Link to="/tcallocation">TC Allocation</Link>
@@ -142,6 +145,9 @@ export default function Simple() {
                   </NavLink>
                   <NavLink key="Crime Detetction">
                     <Link to="/crimedetection">Crime Detection</Link>
+                  </NavLink>
+                  <NavLink key="Fire Detetction">
+                    <Link to="/firedetection">Fire Detection</Link>
                   </NavLink>
                   <NavLink key="Video Meet">
                     <Link to="/videocall">Video Call</Link>

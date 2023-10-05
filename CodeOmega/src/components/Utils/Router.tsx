@@ -31,6 +31,9 @@ import TrashImageOutput from '../TrashDetection/TrashImageOutput';
 import CrimeDetection from '../CrimeDetection/CrimeDetection';
 import CrimeImageOutput from '../CrimeDetection/CrimeImageOutput'
 import CrimeVideoOutput from '../CrimeDetection/CrimeVideoOutput'
+import FireDetection from '../ThreatDetection/FireDetection'
+import FireImageOutput from '../ThreatDetection/FireImageOutput'
+import FireVideoOutput from '../ThreatDetection/FireVideoOutput'
 import TCAllocation from '../TCAllocation/TCAllocation'
 import StaffAllocation from '../StaffAllocation/StaffAllocation';
 import PoliceAllocation from '../PoliceAllocation/PoliceAllocation';
@@ -61,6 +64,9 @@ const RoutesConfig = () => {
       <Route path="/crimedetection" element={<CrimeDetection/>} />
       <Route path="/crimeimageoutput" element={<CrimeImageOutput/>} />
       <Route path="/crimevideooutput" element={<CrimeVideoOutput/>} />
+      <Route path="/firedetection" element={<FireDetection/>} />
+      <Route path="/fireimageoutput" element={<FireImageOutput/>} />
+      <Route path="/firevideooutput" element={<FireVideoOutput/>} />
       <Route path="/tcallocation" element={<TCAllocation/>} />
       <Route path="/staffallocation" element={<StaffAllocation/>} />
       <Route path="/policeallocation" element={<PoliceAllocation/>} />
