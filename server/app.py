@@ -47,16 +47,14 @@ def convert_avi_to_mp4(input_file, output_file):
     except Exception as e:
         print(f'An error occurred: {e}')
 
-def apply_machine_learning_model(model,frame):
-    from ultralytics import YOLO
-    # model = YOLO('yolov8l.pt')
+def apply_machine_learning_model(model_path,frame):
+    model = YOLO(model_path)
     results=model(frame)
+    height, width, _ = (cv2.imread(frame)).shape
     l=[]
     for result in results:
         l.append(result.tojson())
-
-    import json
-
+        
     # Your list of dictionaries as a string within a list
     data_str = l 
     # Parse the string into a Python list
@@ -67,36 +65,36 @@ def apply_machine_learning_model(model,frame):
     # Optionally, you can print the saved JSON data
     with open('output.json', 'r') as json_file:
         saved_data = json.load(json_file)
-        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
+        print(saved_data)
 
     def calculate_cleanliness_percentage(data):
         total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
         trash_count = 0
+        if total_objects>0:
+            for prediction in data:
+                x1, y1, x2, y2, confidence = (
+                    prediction['box']['x1'],
+                    prediction['box']['y1'],
+                    prediction['box']['x2'],
+                    prediction['box']['y2'],
+                    prediction['confidence']
+                )
 
-        for prediction in data:
-            x1, y1, x2, y2, confidence = (
-                prediction['box']['x1'],
-                prediction['box']['y1'],
-                prediction['box']['x2'],
-                prediction['box']['y2'],
-                prediction['confidence']
-            )
+                # Calculate dynamic object size based on position
+                normalized_area = ((x2 - x1) * (y2 - y1)) / (height * width)  # Assuming frame size is 640 x 640
+                trash_count += 1 - normalized_area  # Subtract normalized area from 1
 
-            # Calculate dynamic object size based on position
-            normalized_area = ((x2 - x1) * (y2 - y1)) / (1920 * 1080)  # Assuming frame size is 1920x1080
-            trash_count += 1 - normalized_area  # Subtract normalized area from 1
-
-        # Calculate cleanliness percentage
-        cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
-        return cleanliness_percentage
+            # Calculate cleanliness percentage
+            cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
+            return cleanliness_percentage
+        else:
+            return 100
 
     # Example usage with saved_data
     cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
     print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
     proc_frame=results[0].plot()
     return proc_frame, cleanliness_percentage
-
-
 
 
 def generate_video():
@@ -587,7 +585,12 @@ def garbage_detector_video():
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
+<<<<<<< HEAD
+    cap = cv2.VideoCapture(video_file)
+    
+=======
     cap = cv2.VideoCapture(file_path)
+>>>>>>> aee7e77cac34894a5a7e92f250fe684e20cf8e74
     t=False
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
@@ -600,8 +603,14 @@ def garbage_detector_video():
             print(c1)
             if success:
                 # frame=cv2.resize(frame,(320,320))
+<<<<<<< HEAD
+                cv2.imwrite('frame.jpg',frame)
+                ann_frame, clean_per = apply_machine_learning_model('server\garbage_detector_1.pt','frame.jpg') 
+                cv2.imshow("YOLOv8 Inference", ann_frame)
+=======
                 ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
                 # cv2.imshow("YOLOv8 Inference", ann_frame)
+>>>>>>> aee7e77cac34894a5a7e92f250fe684e20cf8e74
                 # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
                 output_video.write(ann_frame)
                 cnt+=1
