@@ -849,8 +849,9 @@ def crowd_detector_livecam():
     cap.release()
     out.release()
     cv2.destroyAllWindows()
+
 @app.route("/live-video-crowd")
-def live_video():
+def live_video_crowd():
     return Response(crowd_detector_livecam(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/assign/<member_id>", methods=["POST"])
