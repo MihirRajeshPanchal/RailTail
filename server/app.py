@@ -50,14 +50,12 @@ def convert_avi_to_mp4(input_file, output_file):
 def apply_machine_learning_model(model_path,frame):
     model = YOLO(model_path)
     results=model(frame)
-    height, width, _ = (cv2.imread(frame)).shape
     l=[]
+    width, height, _= (cv2.imread(frame)).shape
     for result in results:
         l.append(result.tojson())
-        
-    # Your list of dictionaries as a string within a list
+
     data_str = l 
-    # Parse the string into a Python list
     data_list = json.loads(data_str[0])
     # Save the list to a JSON file
     with open('output.json', 'w') as json_file:
@@ -65,12 +63,12 @@ def apply_machine_learning_model(model_path,frame):
     # Optionally, you can print the saved JSON data
     with open('output.json', 'r') as json_file:
         saved_data = json.load(json_file)
-        print(saved_data)
+        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
 
-    def calculate_cleanliness_percentage(data):
+    def calculate_cleanliness_percentage(data,width,height):
         total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
         trash_count = 0
-        if total_objects>0:
+        if total_objects>0 :
             for prediction in data:
                 x1, y1, x2, y2, confidence = (
                     prediction['box']['x1'],
@@ -79,43 +77,22 @@ def apply_machine_learning_model(model_path,frame):
                     prediction['box']['y2'],
                     prediction['confidence']
                 )
-
+                if confidence > 70:
+                    t=True
                 # Calculate dynamic object size based on position
                 normalized_area = ((x2 - x1) * (y2 - y1)) / (height * width)  # Assuming frame size is 640 x 640
-                trash_count += 1 - normalized_area  # Subtract normalized area from 1
-
-            # Calculate cleanliness percentage
-            cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
+                trash_count += 1 - normalized_area 
+            cleanliness_percentage = (trash_count / total_objects) * 100
             return cleanliness_percentage
         else:
             return 100
-
-    # Example usage with saved_data
-    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
-    print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,width,height)
+    print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     proc_frame=results[0].plot()
-    return proc_frame, cleanliness_percentage
+    return proc_frame,t,cleanliness_percentage
 
 
-def generate_video():
-    # Create a VideoCapture object to capture the screen
-    screen_capture = cv2.VideoCapture(0)  # Change the index to capture a specific screen if necessary
 
-    while True:
-        success, frame = screen_capture.read()
-        if not success:
-            break
-        processed_frame, cleanliness = apply_machine_learning_model(model,frame)
-
-        # Encode the processed frame as JPEG
-        _, buffer = cv2.imencode('.jpg', processed_frame)
-        frame_bytes = buffer.tobytes()
-
-        yield (b'--frame\r/\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-
-    screen_capture.release()
-    cv2.destroyAllWindows()
 
 class CrowdSchema:
     def __init__(self, collection_name):
@@ -310,16 +287,6 @@ def upload_csv():
             return f"Error: {str(e)}"  
     return "succesfull pls check"
 
-@app.route("/report/crowd_detection")
-def crowd_detetcion():
-
-    return "crowd detetion Done!!"
-
-@app.route("/report/crime_detection")
-def crime_detetcion():
-
-    return "crime detetion Done!!"
-
 @app.route("/create_staff_member", methods=["POST"])
 def create_staff_member():
     if request.method == "POST":
@@ -496,56 +463,7 @@ def video_save():
     out.release()
 
 
-def apply_machine_learning_model(model_path,frame,t):
-    
-    model = YOLO(model_path)
-    results=model(frame)
-    l=[]
-    width, height, _= (cv2.imread(frame)).shape
-    for result in results:
-        l.append(result.tojson())
 
-    # Your list of dictionaries as a string within a list
-    data_str = l 
-    # Parse the string into a Python list
-    data_list = json.loads(data_str[0])
-    # Save the list to a JSON file
-    with open('output.json', 'w') as json_file:
-        json.dump(data_list, json_file, indent=4)
-    # Optionally, you can print the saved JSON data
-    with open('output.json', 'r') as json_file:
-        saved_data = json.load(json_file)
-        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
-
-    def calculate_cleanliness_percentage(data,width,height):
-        total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
-        trash_count = 0
-        if total_objects>0 :
-            for prediction in data:
-                x1, y1, x2, y2, confidence = (
-                    prediction['box']['x1'],
-                    prediction['box']['y1'],
-                    prediction['box']['x2'],
-                    prediction['box']['y2'],
-                    prediction['confidence']
-                )
-                if confidence > 70:
-                    t=True
-                # Calculate dynamic object size based on position
-                normalized_area = ((x2 - x1) * (y2 - y1)) / (width*height)  # Assuming frame size is 1920x1080
-                trash_count +=1- normalized_area  # Subtract normalized area from 1
-
-            # Calculate cleanliness percentage
-            cleanliness_percentage = (1- (trash_count / total_objects)) * 100
-            return cleanliness_percentage
-        else:
-            return 100
-    # Example usage with saved_data
-    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,width,height)
-    print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
-    # print(cleanliness_percentage)
-    proc_frame=results[0].plot()
-    return proc_frame,t,cleanliness_percentage
 
 @app.route("/upload-garbage-image",methods=['POST'])
 def garbage_detector_image():
@@ -641,7 +559,7 @@ def garbage_detector_video():
             }
         complaints_collection = MongoDB('complaints')
         result = complaints_collection.insert_one(complaint)
-    return {"message": "success"}
+    return jsonify(message="OK")
 
 @app.route("/upload-threat-image", methods=['POST'])
 def threat_detector_image():
@@ -651,7 +569,7 @@ def threat_detector_image():
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("fire-smoke-detection-eozii")
     model = project.version(1).model
-    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/threat_prediction.jpg')
+    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/ThreatDetection/threat_prediction.jpg')
     response = {"image": "success"}
     print("Response",response)
     return jsonify(response)
@@ -853,10 +771,89 @@ def crime_detector_image():
     print("Response",response)
     return jsonify(response)
 
-@app.route("/live-video")
-def live_video():
-    return Response(generate_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
+def trash_detector_livecam():
+    model_path = 'garbage_detector_1.pt'
+    model = YOLO(model_path)
 
+    # Create a VideoCapture object to capture video from the webcam (0 represents the default camera)
+    cap = cv2.VideoCapture(0)
+
+    # Initialize the video writer to serve the frames as a video stream
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
+
+    # Loop through the video frames
+    while cap.isOpened():
+        success, frame = cap.read()
+
+        if success:
+            # Apply the trash detection model to the frame
+            results = model(frame)
+            annotated_frame = results[0].plot()
+
+            # Write the frame to the video stream
+            out.write(annotated_frame)
+
+            # Encode the frame as JPEG for streaming
+            _, jpeg_frame = cv2.imencode('.jpg', annotated_frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg_frame.tobytes() + b'\r\n')
+
+            # Break the loop if 'q' is pressed
+            # if cv2.waitKey(1) & 0xFF == ord("q"):
+            #     break
+        else:
+            break
+
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+
+@app.route("/live-video-trash")
+def live_video():
+    return Response(trash_detector_livecam(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+def crowd_detector_livecam():
+    model_path = 'garbage_detector_1.pt'
+    model = YOLO(model_path)
+
+    # Create a VideoCapture object to capture video from the webcam (0 represents the default camera)
+    cap = cv2.VideoCapture(0)
+
+    # Initialize the video writer to serve the frames as a video stream
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
+
+    # Loop through the video frames
+    while cap.isOpened():
+        success, frame = cap.read()
+
+        if success:
+            # Apply the trash detection model to the frame
+            results = model(frame)
+            annotated_frame = results[0].plot()
+
+            # Write the frame to the video stream
+            out.write(annotated_frame)
+
+            # Encode the frame as JPEG for streaming
+            _, jpeg_frame = cv2.imencode('.jpg', annotated_frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg_frame.tobytes() + b'\r\n')
+
+            # Break the loop if 'q' is pressed
+            # if cv2.waitKey(1) & 0xFF == ord("q"):
+            #     break
+        else:
+            break
+
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+@app.route("/live-video-crowd")
+def live_video():
+    return Response(crowd_detector_livecam(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/assign/<member_id>", methods=["POST"])
 def toggle_assignment(member_id):

@@ -25,17 +25,17 @@ export default function Hero() {
         <Stack
           align={'center'}
           spacing={{ base: 8, md: 10 }}
-          py={{ base: 20, md: 28 }}
+          py={{ base: 2, md: 28 }}
           direction={{ base: 'column', md: 'row' }}
         >
-          <Stack flex={1} spacing={{ base: 5, md: 10 }}>
+          <Stack flex={1} spacing={{ base: 5, md: 5 }}>
             <Heading
               as={motion.h1} 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }}  
               lineHeight={1.1}
               fontWeight={600}
-              fontSize={{ base: '3xl', sm: '4xl', lg: '6xl' }}
+              fontSize={{ base: '3xl', sm: '4xl', lg: '5xl' }}
             >
               <Text
                 as={'span'}
@@ -51,15 +51,15 @@ export default function Hero() {
                   zIndex: -1,
                 }}
               >
-                RailTail,
+                RailTail
               </Text>
               <br />
               <Text as={'span'} color={'blue.400'}>
-                Transforming Tracks, Empowering Travels
+                Revolutionizing Indian Railways with AI-Powered Insight
               </Text>
             </Heading>
             <Text color={'gray.500'}>
-              RailTail is a pioneering initiative designed to revolutionize the Indian Railways experience by seamlessly integrating cutting-edge technology into the heart of one of the world's largest railway networks. Our project is driven by the vision of enhancing safety, efficiency, and passenger satisfaction while effectively addressing the unique challenges posed by the vast scale and complexity of the railway network.
+            Rail Tail is not merely a project; it is a visionary solution poised to transform one of the world's largest and most intricate railway networks, Indian Railways. At its core, Rail Tail is a state-of-the-art platform harnessing the formidable potential of artificial intelligence (AI) and machine learning (ML) technologies. It is tailored to address the daily challenges of managing millions of passengers, maintaining cleanliness, preventing crime, and optimizing operational efficiency within the Indian Railways system.
             </Text>
             <Stack spacing={{ base: 4, sm: 6 }} direction={{ base: 'column', sm: 'row' }}>
               <Button

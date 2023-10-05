@@ -72,6 +72,7 @@ export default function TrashDetection() {
   const handleVideoFileChange = (event) => {
     const selectedFile = event.target.files[0]; // Get the selected file
 
+    setIsLoading(true);
     if (selectedFile) {
       const formData = new FormData();
       formData.append('file', selectedFile);
@@ -85,12 +86,15 @@ export default function TrashDetection() {
         .then((data) => {
           console.log('Response from server:', data);
           // Handle the response data as needed
+          setIsLoading(false); // Hide the loader
+          navigate('/trashvideooutput');
         })
         .catch((error) => {
           console.error('Error:', error);
           // Handle errors
         });
     }
+    setIsLoading(false);
   };
 
 
