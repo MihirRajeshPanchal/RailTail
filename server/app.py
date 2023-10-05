@@ -644,7 +644,7 @@ def garbage_detector_video():
             }
         complaints_collection = MongoDB('complaints')
         result = complaints_collection.insert_one(complaint)
-    return {{"message": "success"}}
+    return jsonify(message="OK")
 
 @app.route("/upload-threat-image", methods=['POST'])
 def threat_detector_image():

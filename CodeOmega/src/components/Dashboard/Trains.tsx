@@ -36,7 +36,7 @@ import c5 from "../../assets/crowd/c5.jpg"
 import c6 from "../../assets/crowd/c6.jpg"
 import c7 from "../../assets/crowd/c7.jpg"
 import c8 from "../../assets/crowd/c8.jpg"
-
+import logo from "../../assets/logo.png"
 export default function Trains() {
   const coachImages = [frontcoach, coach, coach, coach, coach, coach, coach, coach];
 
@@ -45,12 +45,64 @@ export default function Trains() {
   const clean = [65,83,61,50,88,58,51,83]
   const crowd = [0,7,11,19,9,1,9,7]
 
+  const cleanSum = clean.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const crowsdSum = crowd.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isFinalPopupOpen, setFinalPopupOpen] = useState(false);
   const [selectedCrowdImage, setSelectedCrowdImage] = useState(null);
   const [selectedCleanImage, setSelectedCleanImage] = useState(null);
   const [selectedBoogieNumber, setSelectedBoogieNumber] = useState(null);
   const [selectedClean, setSelectedClean] = useState(null);
   const [selectedCrowd, setSelectedCrowd] = useState(null);
+
+  // Function to determine the color for crowd based on the value
+  const getColorForCrowd = (crowdValue) => {
+    if (crowdValue <= 5) {
+        return "green";
+    } else if (crowdValue <= 15) {
+        return "yellow";
+    } else {
+        return "red";
+    }
+  };
+
+  // Function to get a description for crowd based on the value
+  const getDescriptionForCrowd = (crowdValue) => {
+    if (crowdValue <= 5) {
+        return " (Low crowd)";
+    } else if (crowdValue <= 15) {
+        return " (Moderate crowd)";
+    } else {
+        return " (High crowd)";
+    }
+  };
+
+  // Function to determine the color for clean based on the value
+  const getColorForClean = (cleanValue) => {
+    if (cleanValue <= 30) {
+        return "green";
+    } else if (cleanValue <= 70) {
+        return "yellow";
+    } else {
+        return "red";
+    }
+  };
+
+  // Function to get a description for clean based on the value
+  const getDescriptionForClean = (cleanValue) => {
+    if (cleanValue <= 30) {
+        return " (Clean)";
+    } else if (cleanValue <= 70) {
+        return " (Partially clean)";
+    } else {
+        return " (Unclean)";
+    }
+  };
+
+  const openFinalPopup = () => {
+    setFinalPopupOpen(true);
+  }
 
   const openPopup = (index) => {
     const selectedBoogieNumber = index + 1;
@@ -68,6 +120,7 @@ export default function Trains() {
 
   const closePopup = () => {
     setPopupOpen(false);
+    setFinalPopupOpen(false);
     setSelectedCrowdImage(null);
     setSelectedCleanImage(null);
   };
@@ -120,6 +173,17 @@ export default function Trains() {
           ))}
         </div>
       </Center>
+      <Center>
+        <Button
+            colorScheme="green"
+            size="lg"
+            my={5}
+            px={6}
+            onClick={() => openFinalPopup()}
+            >
+            Overall Analysis
+        </Button>
+      </Center>
 
       {/* Modal Popup */}
       <Modal isOpen={isPopupOpen} onClose={closePopup}>
@@ -129,23 +193,54 @@ export default function Trains() {
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                {(
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                        <div style={{ flex: 1, marginRight: "10px" }}>
-                            <Center>
-                                <Image src={selectedCrowdImage} alt="Popup Image" />
-                            </Center>
-                            <Text textAlign="center" mt={4}>Head Count : {selectedCrowd}</Text>
-                        </div>
-                        <div style={{ flex: 1, marginLeft: "10px" }}>
-                            <Center>
-                                <Image src={selectedCleanImage} alt="Popup Image" />
-                            </Center>
-                            <Text textAlign="center" mt={4}>Unclean Percentage : {selectedClean}%</Text>
-                        </div>
-                    </div>
-                )}
-            </ModalBody>
+                  {(
+                      <div style={{ display: "flex", justifyContent: "center" }}>
+                          <div style={{ flex: 1, marginRight: "10px" }}>
+                              <Center>
+                                  <Image src={selectedCrowdImage} alt="Popup Image" />
+                              </Center>
+                              <Text textAlign="center" mt={4} style={{ color: getColorForCrowd(selectedCrowd) }}>
+                                  Head Count: {selectedCrowd}
+                                  {getDescriptionForCrowd(selectedCrowd)}
+                              </Text>
+                          </div>
+                          <div style={{ flex: 1, marginLeft: "10px" }}>
+                              <Center>
+                                  <Image src={selectedCleanImage} alt="Popup Image" />
+                              </Center>
+                              <Text textAlign="center" mt={4} style={{ color: getColorForClean(selectedClean) }}>
+                                  Unclean Percentage: {selectedClean}%
+                                  {getDescriptionForClean(selectedClean)}
+                              </Text>
+                          </div>
+                      </div>
+                  )}
+              </ModalBody>
+            <ModalFooter>
+                <Button colorScheme="green" onClick={closePopup}>Close</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
+
+
+      <Modal isOpen={isFinalPopupOpen} onClose={closePopup}>
+        <ModalContent>
+            <ModalHeader maxW={64} mx="auto" textAlign="center">
+                Boogie Number: {selectedBoogieNumber}
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+            <Center>
+                  <Image src={logo} alt="Popup Image" />
+            </Center>
+                <Text textAlign="center" mt={4}>
+                    Head Count: {crowsdSum}
+                </Text>
+                <Text textAlign="center" mt={4}>
+                  Unclean Percentage: {cleanSum /10 } %
+                </Text>
+              </ModalBody>
             <ModalFooter>
                 <Button colorScheme="green" onClick={closePopup}>Close</Button>
             </ModalFooter>
