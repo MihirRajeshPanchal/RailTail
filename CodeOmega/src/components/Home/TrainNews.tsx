@@ -70,7 +70,7 @@ const ArticleList = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://newsapi.org/v2/everything?q=mumbai+trains+railways&from=2023-09-04&sortBy=publishedAt&apiKey=ed91438d8663496fb648751476f33829&language=en'
+          'https://newsapi.org/v2/everything?q=mumbai+trains+railways&from=2023-09-15&sortBy=publishedAt&apiKey=f161a42f390f4865a2bb6a180de4c526&language=en'
         );
 
         if (response.ok) {
@@ -93,7 +93,7 @@ const ArticleList = () => {
 
   return (
     <Container maxW={'7xl'} p="12">
-      <Heading as="h1">Upcoming Events</Heading>
+      <Heading as="h1">Train News</Heading>
       {events.map((event, index) => (
       <Box
         marginTop={{ base: '1', sm: '5' }}

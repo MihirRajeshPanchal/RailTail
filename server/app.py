@@ -11,7 +11,7 @@ import json
 import glob
 from transformers import pipeline
 from roboflow import Roboflow
-
+from moviepy.editor import VideoFileClip
 
 load_dotenv()
 
@@ -26,7 +26,26 @@ def MongoDB(collection_name):
     collection = db.get_collection(collection_name)
     return collection
 
-
+def convert_avi_to_mp4(input_file, output_file):
+    """
+    Converts an AVI video to MP4 using the moviepy library.
+    
+    Args:
+        input_file (str): Path to the input AVI file.
+        output_file (str): Path to the output MP4 file.
+    """
+    try:
+        # Load the AVI video
+        video = VideoFileClip(input_file)
+        
+        # Write the video to an MP4 file
+        video.write_videofile(output_file, codec='libx264')
+        
+        # Close the video object
+        video.close()
+        print(f'Conversion completed: {input_file} -> {output_file}')
+    except Exception as e:
+        print(f'An error occurred: {e}')
 
 def apply_machine_learning_model(model,frame):
     from ultralytics import YOLO
@@ -674,7 +693,8 @@ def threat_detector_video():
         out.write(img_array[i])
     out.release()
     cap.release()
-    return "done"
+    convert_avi_to_mp4("../CodeOmega/src/components/ThreatDetection/output.avi", "../CodeOmega/src/components/ThreatDetection/output.mp4")
+    return jsonify(message="OK")
 
 @app.route("/upload-crowd-image", methods=['POST'])
 def crowd_detector_image():
@@ -746,7 +766,8 @@ def crowd_detector_video():
         out.write(img_array[i])
     out.release()
     cap.release()
-    return "done"
+    convert_avi_to_mp4("../CodeOmega/src/components/CrowdDetection/output.avi", "../CodeOmega/src/components/CrowdDetection/output.mp4")
+    return jsonify(message="OK")
 
 @app.route("/upload-crime-video", methods=['POST'])
 def crime_detector_video():
@@ -794,13 +815,14 @@ def crime_detector_video():
         img_array.append(img)
         print('appending',filename)
     print("BEFORE OUT")
-    out = cv2.VideoWriter("../CodeOmega/src/components/CrimeDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+    out = cv2.VideoWriter("../CodeOmega/src/components/CrimeDetection/output_crime.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
 
     for i in range(len(img_array)):
         out.write(img_array[i])
     out.release()
     cap.release()
-    return "done"
+    convert_avi_to_mp4("../CodeOmega/src/components/CrimeDetection/output_crime.avi", "../CodeOmega/src/components/CrimeDetection/output_crime.mp4")
+    return jsonify(message="OK")
 
 @app.route("/upload-crime-image", methods=['POST'])
 def crime_detector_image():

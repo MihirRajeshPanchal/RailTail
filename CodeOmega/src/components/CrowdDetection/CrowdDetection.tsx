@@ -68,7 +68,7 @@ export default function CrowdDetection() {
 
   const handleVideoFileChange = (event) => {
     const selectedFile = event.target.files[0]; // Get the selected file
-
+    setIsLoading(true);
     const formData = new FormData();
       formData.append('file', selectedFile);
       console.log(selectedFile)
@@ -81,11 +81,14 @@ export default function CrowdDetection() {
         .then((data) => {
           console.log('Response from server:', data);
           // Handle the response data as needed
+          setIsLoading(false); // Hide the loader
+          navigate('/crowdvideooutput');
         })
         .catch((error) => {
           console.error('Error:', error);
           // Handle errors
         });
+        setIsLoading(false);
   };
 
 

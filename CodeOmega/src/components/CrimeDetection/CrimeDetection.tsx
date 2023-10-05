@@ -70,6 +70,7 @@ export default function CrimeDetection() {
     const selectedFile = event.target.files[0]; // Get the selected file
 
     const formData = new FormData();
+      setIsLoading(true); 
       formData.append('file', selectedFile);
       console.log(selectedFile)
       // Make a POST request to your server API to process the image
@@ -81,11 +82,14 @@ export default function CrimeDetection() {
         .then((data) => {
           console.log('Response from server:', data);
           // Handle the response data as needed
+          setIsLoading(false); // Hide the loader
+          navigate('/crimevideooutput');
         })
         .catch((error) => {
           console.error('Error:', error);
           // Handle errors
         });
+        setIsLoading(false); 
   };
 
 
