@@ -583,7 +583,7 @@ def threat_detector_video():
     cnt = 0
     c1 = 0
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
-    project = rf.workspace().project("crowd_count_v2")
+    project = rf.workspace().project("fire-smoke-detection-eozii")
     model = project.version(2).model
     cap = cv2.VideoCapture(file_path)
     

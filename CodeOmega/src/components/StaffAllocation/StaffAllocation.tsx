@@ -24,9 +24,10 @@ import {
   useDisclosure,
   Collapse,
 } from '@chakra-ui/react';
-import { BsTelephone, BsMailbox } from 'react-icons/bs';
+import { BsTelephone, BsMailbox, BsWhatsapp } from 'react-icons/bs';
 import staffimg from "../../assets/staff.png";
 import { ImCross, ImCheckmark } from 'react-icons/im'
+import { MdEmail } from 'react-icons/md';
 export default function Staffallocation() {
   const [dataArray, setDataArray] = useState([]);
   const [notificationArray, setNotificationArray] = useState([]);
@@ -200,7 +201,7 @@ export default function Staffallocation() {
               </Text>
               <Center>
                 <HStack mt={10} spacing={5} px={5} alignItems="flex-start">
-                  <IconButton
+                <IconButton
                     aria-label="Call"
                     variant="ghost"
                     size="lg"
@@ -210,13 +211,22 @@ export default function Staffallocation() {
                     icon={<BsTelephone size="28px" />}
                   />
                   <IconButton
+                      aria-label="Mail"
+                      variant="ghost"
+                      size="lg"
+                      isRound={true}
+                      onClick={() => window.location.href = `mailto:${data.email}`}
+                      _hover={{ bg: '#0D74FF' }}
+                      icon={<BsWhatsapp size="23px" />}
+                    />
+                  <IconButton
                     aria-label="Mail"
                     variant="ghost"
                     size="lg"
                     isRound={true}
                     onClick={() => window.location.href = `mailto:${data.email}`}
                     _hover={{ bg: '#0D74FF' }}
-                    icon={<BsMailbox size="23px" />}
+                    icon={<MdEmail size="23px" />}
                   />
                 </HStack>
               </Center>
