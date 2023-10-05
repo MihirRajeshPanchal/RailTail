@@ -50,14 +50,12 @@ def convert_avi_to_mp4(input_file, output_file):
 def apply_machine_learning_model(model_path,frame):
     model = YOLO(model_path)
     results=model(frame)
-    height, width, _ = (cv2.imread(frame)).shape
     l=[]
+    width, height, _= (cv2.imread(frame)).shape
     for result in results:
         l.append(result.tojson())
-        
-    # Your list of dictionaries as a string within a list
+
     data_str = l 
-    # Parse the string into a Python list
     data_list = json.loads(data_str[0])
     # Save the list to a JSON file
     with open('output.json', 'w') as json_file:
@@ -65,12 +63,12 @@ def apply_machine_learning_model(model_path,frame):
     # Optionally, you can print the saved JSON data
     with open('output.json', 'r') as json_file:
         saved_data = json.load(json_file)
-        print(saved_data)
+        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
 
-    def calculate_cleanliness_percentage(data):
+    def calculate_cleanliness_percentage(data,width,height):
         total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
         trash_count = 0
-        if total_objects>0:
+        if total_objects>0 :
             for prediction in data:
                 x1, y1, x2, y2, confidence = (
                     prediction['box']['x1'],
@@ -79,35 +77,32 @@ def apply_machine_learning_model(model_path,frame):
                     prediction['box']['y2'],
                     prediction['confidence']
                 )
-
+                if confidence > 70:
+                    t=True
                 # Calculate dynamic object size based on position
                 normalized_area = ((x2 - x1) * (y2 - y1)) / (height * width)  # Assuming frame size is 640 x 640
-                trash_count += 1 - normalized_area  # Subtract normalized area from 1
-
-            # Calculate cleanliness percentage
-            cleanliness_percentage = (1 - (trash_count / total_objects)) * 100
+                trash_count += 1 - normalized_area 
+            cleanliness_percentage = (trash_count / total_objects) * 100
             return cleanliness_percentage
         else:
             return 100
-
-    # Example usage with saved_data
-    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
-    print(f'Cleanliness Percentage: {cleanliness_percentage:.2f}%')
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,width,height)
+    print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     proc_frame=results[0].plot()
-    return proc_frame, cleanliness_percentage
+    return proc_frame,t,cleanliness_percentage
 
 
-def generate_video():
+def trash_detector_livecam():
     # Create a VideoCapture object to capture the screen
     screen_capture = cv2.VideoCapture(0)  # Change the index to capture a specific screen if necessary
 
     while True:
         success, frame = screen_capture.read()
+        model_path = 'garbage_detector_1.pt'
+        model = YOLO(model_path)
         if not success:
             break
 
-        # Here, you can apply your machine learning model to process each frame
-        # Replace the following line with your model processing logic
         processed_frame, cleanliness = apply_machine_learning_model(model,frame)
 
         # Encode the processed frame as JPEG
@@ -499,56 +494,7 @@ def video_save():
     out.release()
 
 
-def apply_machine_learning_model(model_path,frame,t):
-    
-    model = YOLO(model_path)
-    results=model(frame)
-    l=[]
-    width, height, _= (cv2.imread(frame)).shape
-    for result in results:
-        l.append(result.tojson())
 
-    # Your list of dictionaries as a string within a list
-    data_str = l 
-    # Parse the string into a Python list
-    data_list = json.loads(data_str[0])
-    # Save the list to a JSON file
-    with open('output.json', 'w') as json_file:
-        json.dump(data_list, json_file, indent=4)
-    # Optionally, you can print the saved JSON data
-    with open('output.json', 'r') as json_file:
-        saved_data = json.load(json_file)
-        print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
-
-    def calculate_cleanliness_percentage(data,width,height):
-        total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
-        trash_count = 0
-        if total_objects>0 :
-            for prediction in data:
-                x1, y1, x2, y2, confidence = (
-                    prediction['box']['x1'],
-                    prediction['box']['y1'],
-                    prediction['box']['x2'],
-                    prediction['box']['y2'],
-                    prediction['confidence']
-                )
-                if confidence > 70:
-                    t=True
-                # Calculate dynamic object size based on position
-                normalized_area = ((x2 - x1) * (y2 - y1)) / (width*height)  # Assuming frame size is 1920x1080
-                trash_count +=1- normalized_area  # Subtract normalized area from 1
-
-            # Calculate cleanliness percentage
-            cleanliness_percentage = (1- (trash_count / total_objects)) * 100
-            return cleanliness_percentage
-        else:
-            return 100
-    # Example usage with saved_data
-    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,width,height)
-    print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
-    # print(cleanliness_percentage)
-    proc_frame=results[0].plot()
-    return proc_frame,t,cleanliness_percentage
 
 @app.route("/upload-garbage-image",methods=['POST'])
 def garbage_detector_image():
@@ -858,7 +804,7 @@ def crime_detector_image():
 
 @app.route("/live-video")
 def live_video():
-    return Response(generate_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(trash_detector_livecam(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route("/assign/<member_id>", methods=["POST"])
