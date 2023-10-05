@@ -28,6 +28,7 @@ import CrowdImageOutput from '../CrowdDetection/CrowdImageOutput'
 import CrowdVideoOutput from '../CrowdDetection/CrowdVideoOutput'
 import TrashDetection from '../TrashDetection/TrashDetection';
 import TrashImageOutput from '../TrashDetection/TrashImageOutput';
+import TrashVideoOutput from '../TrashDetection/TrashVideoOutput'
 import CrimeDetection from '../CrimeDetection/CrimeDetection';
 import CrimeImageOutput from '../CrimeDetection/CrimeImageOutput'
 import CrimeVideoOutput from '../CrimeDetection/CrimeVideoOutput'
@@ -61,6 +62,7 @@ const RoutesConfig = () => {
       <Route path="/crowdvideooutput" element={<CrowdVideoOutput/>} />
       <Route path="/trashdetection" element={<TrashDetection/>} />
       <Route path="/trashimageoutput" element={<TrashImageOutput/>} />
+      <Route path="/trashvideooutput" element={<TrashVideoOutput/>} />
       <Route path="/crimedetection" element={<CrimeDetection/>} />
       <Route path="/crimeimageoutput" element={<CrimeImageOutput/>} />
       <Route path="/crimevideooutput" element={<CrimeVideoOutput/>} />
