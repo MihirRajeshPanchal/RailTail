@@ -477,9 +477,9 @@ def get_police():
 def video_save():
     img_array = []
     file_list=[]
-    for file_n in glob.glob('frames/*jpg'):
+    for file_n in glob.glob('trash_frames/*jpg'):
         print(file_n)
-        file_n=file_n.replace('frames/','')
+        file_n=file_n.replace('trash_frames/','')
         file_n = file_n.replace('.jpg', '')
         file_list.append(file_n)
 
@@ -504,7 +504,7 @@ def apply_machine_learning_model(model_path,frame,t):
     model = YOLO(model_path)
     results=model(frame)
     l=[]
-    w,h= cv2.imread(frame).shape
+    width, height, _= (cv2.imread(frame)).shape
     for result in results:
         l.append(result.tojson())
 
@@ -520,32 +520,31 @@ def apply_machine_learning_model(model_path,frame,t):
         saved_data = json.load(json_file)
         print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
 
-    def calculate_cleanliness_percentage(data,w,h):
+    def calculate_cleanliness_percentage(data,width,height):
         total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
         trash_count = 0
-
-        for prediction in data:
-            x1, y1, x2, y2, confidence = (
-                prediction['box']['x1'],
-                prediction['box']['y1'],
-                prediction['box']['x2'],
-                prediction['box']['y2'],
-                prediction['confidence']
-            )
-            if confidence > 70:
-                t=True
-            # Calculate dynamic object size based on position
-            normalized_area = ((x2 - x1) * (y2 - y1)) / (w*h)  # Assuming frame size is 1920x1080
-            trash_count +=1- normalized_area  # Subtract normalized area from 1
-
-        # Calculate cleanliness percentage
         if total_objects>0 :
-            cleanliness_percentage = (trash_count / total_objects) * 100
+            for prediction in data:
+                x1, y1, x2, y2, confidence = (
+                    prediction['box']['x1'],
+                    prediction['box']['y1'],
+                    prediction['box']['x2'],
+                    prediction['box']['y2'],
+                    prediction['confidence']
+                )
+                if confidence > 70:
+                    t=True
+                # Calculate dynamic object size based on position
+                normalized_area = ((x2 - x1) * (y2 - y1)) / (width*height)  # Assuming frame size is 1920x1080
+                trash_count +=1- normalized_area  # Subtract normalized area from 1
+
+            # Calculate cleanliness percentage
+            cleanliness_percentage = (1- (trash_count / total_objects)) * 100
             return cleanliness_percentage
         else:
-            return 0
+            return 100
     # Example usage with saved_data
-    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,w,h)
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,width,height)
     print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     # print(cleanliness_percentage)
     proc_frame=results[0].plot()
@@ -566,6 +565,8 @@ def garbage_detector_image():
     print("Succes:- ",success)
     response = {"image": "success"}
     print("Response",response)
+    with open('../CodeOmega/src/components/TrashDetection/trashjson.json', 'w') as json_file:
+        json.dump({"num": cleanliness_percentage}, json_file)
     if t:
         complaint = {
                 "type": "cleanliness",
@@ -585,9 +586,7 @@ def garbage_detector_video():
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
-
     cap = cv2.VideoCapture(file_path)
-
     t=False
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
@@ -601,11 +600,11 @@ def garbage_detector_video():
             if success:
                 # frame=cv2.resize(frame,(320,320))
                 cv2.imwrite('frame.jpg',frame)
-                ann_frame, clean_per = apply_machine_learning_model('server\garbage_detector_1.pt','frame.jpg') 
-                cv2.imshow("YOLOv8 Inference", ann_frame)
-                # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
+                ann_frame, t, clean_per = apply_machine_learning_model('garbage_detector_1.pt','frame.jpg', t = t) 
+                cv2.imwrite('trash_frames/'+str(cnt)+'.jpg',ann_frame)
                 output_video.write(ann_frame)
                 cnt+=1
+                print('CLEAN PERCENTAGE:',clean_per)
                 # if cv2.waitKey(1) & 0xFF == ord("q"):
                 #     break
             else:
@@ -613,11 +612,29 @@ def garbage_detector_video():
         else:
             pass
         c1 += 1
-    video_save()        
-    cap.release()
-    output_video.release()
-    cv2.destroyAllWindows()
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('trash_frames/*jpg'):
+        print(file_n)
+        file_n = int(file_n.split('\\')[1].split('.')[0])
+        file_list.append(file_n)
 
+    file_list.sort(key=int)
+    print("file list:-",file_list)
+    for filename in file_list:
+        img = cv2.imread('trash_frames/'+str(filename)+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter("../CodeOmega/src/components/TrashDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    cap.release()
+    convert_avi_to_mp4("../CodeOmega/src/components/TrashDetection/output.avi", "../CodeOmega/src/components/TrashDetection/output.mp4")
     if t:
         complaint = {
                 "type": "cleanliness",
