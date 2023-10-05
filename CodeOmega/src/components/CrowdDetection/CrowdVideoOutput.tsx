@@ -12,7 +12,11 @@ import {
 
 import video from './output.mp4'
 import React from 'react'
-export default function CrowdImageOutput() {
+import crowdData from './crowdjson.json';
+export default function CrowdVideoOutput() {
+
+  const numberOfHeads = crowdData.num;
+
   return (
     <>
 
@@ -72,7 +76,7 @@ export default function CrowdImageOutput() {
             Crowd Detection Output
           </Text>
           <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            Number of Heads
+            Number of Heads : {numberOfHeads}
           </Heading>
           <Stack direction={'row'} align={'center'}>
           </Stack>

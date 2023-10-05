@@ -12,7 +12,12 @@ import {
 
 import video from './output.mp4'
 import React from 'react'
+import trashData from './trashjson.json';
+
 export default function TrashVideoOutput() {
+
+  const cleanliness = trashData.num;
+
   return (
     <>
 
@@ -42,6 +47,7 @@ export default function TrashVideoOutput() {
         zIndex={1}>
         <Box
           rounded={'lg'}
+          py={10}
           mt={-12}
           pos={'relative'}
           height={'230px'}
@@ -67,12 +73,12 @@ export default function TrashVideoOutput() {
                 </video>
           </div>
         </Box>
-        <Stack pt={10} align={'center'} my={10}>
+        <Stack pt={10} align={'center'} my={1}>
           <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
             Trash Detection Output
           </Text>
           <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            Cleanliness Report 
+            Uncleanliness Percentage : {cleanliness}
           </Heading>
           <Stack direction={'row'} align={'center'}>
           </Stack>

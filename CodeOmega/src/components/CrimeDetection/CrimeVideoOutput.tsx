@@ -25,7 +25,7 @@ export default function CrimeVideoOutput() {
           lineHeight={'110%'}
           textAlign="center"
         >
-          Crime Image Detection
+          Crime Video Detection
         </Heading>
     </Center>
     <Center py={12}>

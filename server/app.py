@@ -92,28 +92,7 @@ def apply_machine_learning_model(model_path,frame):
     return proc_frame, cleanliness_percentage
 
 
-def trash_detector_livecam():
-    # Create a VideoCapture object to capture the screen
-    screen_capture = cv2.VideoCapture(0)  # Change the index to capture a specific screen if necessary
 
-    while True:
-        success, frame = screen_capture.read()
-        model_path = 'garbage_detector_1.pt'
-        model = YOLO(model_path)
-        if not success:
-            break
-
-        processed_frame, cleanliness = apply_machine_learning_model(model,frame)
-
-        # Encode the processed frame as JPEG
-    #     _, buffer = cv2.imencode('.jpg', processed_frame)
-    #     frame_bytes = buffer.tobytes()
-
-    #     yield (b'--frame\r\n'
-    #            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-
-    # screen_capture.release()
-    cv2.destroyAllWindows()
 
 class CrowdSchema:
     def __init__(self, collection_name):
@@ -307,16 +286,6 @@ def upload_csv():
         except Exception as e:
             return f"Error: {str(e)}"  
     return "succesfull pls check"
-
-@app.route("/report/crowd_detection")
-def crowd_detetcion():
-
-    return "crowd detetion Done!!"
-
-@app.route("/report/crime_detection")
-def crime_detetcion():
-
-    return "crime detetion Done!!"
 
 @app.route("/create_staff_member", methods=["POST"])
 def create_staff_member():
@@ -623,7 +592,7 @@ def threat_detector_video():
         if not success:
             break
         
-        if c1 % 10 == 0:
+        if c1 % 20 == 0:
             print("Frame:", c1)
             resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
             cv2.imwrite('threat_frames/'+str(cnt)+'.jpg',resized_frame)
@@ -802,10 +771,88 @@ def crime_detector_image():
     print("Response",response)
     return jsonify(response)
 
-@app.route("/live-video")
+def trash_detector_livecam():
+    model_path = 'garbage_detector_1.pt'
+    model = YOLO(model_path)
+
+    # Create a VideoCapture object to capture video from the webcam (0 represents the default camera)
+    cap = cv2.VideoCapture(0)
+
+    # Initialize the video writer to serve the frames as a video stream
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
+
+    # Loop through the video frames
+    while cap.isOpened():
+        success, frame = cap.read()
+
+        if success:
+            # Apply the trash detection model to the frame
+            results = model(frame)
+            annotated_frame = results[0].plot()
+
+            # Write the frame to the video stream
+            out.write(annotated_frame)
+
+            # Encode the frame as JPEG for streaming
+            _, jpeg_frame = cv2.imencode('.jpg', annotated_frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg_frame.tobytes() + b'\r\n')
+
+            # Break the loop if 'q' is pressed
+            # if cv2.waitKey(1) & 0xFF == ord("q"):
+            #     break
+        else:
+            break
+
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+
+@app.route("/live-video-trash")
 def live_video():
     return Response(trash_detector_livecam(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+def crowd_detector_livecam():
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    cap = cv2.VideoCapture(0)
+    # Initialize the video writer to serve the frames as a video stream
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
+
+    # Loop through the video frames
+    while cap.isOpened():
+        success, frame = cap.read()
+
+        if success:
+            # Apply the trash detection model to the frame
+            results = model(frame)
+            annotated_frame = results[0].plot()
+
+            # Write the frame to the video stream
+            out.write(annotated_frame)
+
+            # Encode the frame as JPEG for streaming
+            _, jpeg_frame = cv2.imencode('.jpg', annotated_frame)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + jpeg_frame.tobytes() + b'\r\n')
+
+            # Break the loop if 'q' is pressed
+            # if cv2.waitKey(1) & 0xFF == ord("q"):
+            #     break
+        else:
+            break
+
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+
+@app.route("/live-video-crowd")
+def live_video_crowd():
+    return Response(crowd_detector_livecam(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route("/assign/<member_id>", methods=["POST"])
 def toggle_assignment(member_id):
