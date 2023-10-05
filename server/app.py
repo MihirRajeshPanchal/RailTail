@@ -585,12 +585,9 @@ def garbage_detector_video():
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
-<<<<<<< HEAD
-    cap = cv2.VideoCapture(video_file)
-    
-=======
+
     cap = cv2.VideoCapture(file_path)
->>>>>>> aee7e77cac34894a5a7e92f250fe684e20cf8e74
+
     t=False
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
@@ -603,14 +600,9 @@ def garbage_detector_video():
             print(c1)
             if success:
                 # frame=cv2.resize(frame,(320,320))
-<<<<<<< HEAD
                 cv2.imwrite('frame.jpg',frame)
                 ann_frame, clean_per = apply_machine_learning_model('server\garbage_detector_1.pt','frame.jpg') 
                 cv2.imshow("YOLOv8 Inference", ann_frame)
-=======
-                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
-                # cv2.imshow("YOLOv8 Inference", ann_frame)
->>>>>>> aee7e77cac34894a5a7e92f250fe684e20cf8e74
                 # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
                 output_video.write(ann_frame)
                 cnt+=1
