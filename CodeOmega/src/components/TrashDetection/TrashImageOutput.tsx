@@ -12,7 +12,12 @@ import {
 
 import photo from './output_image.jpg'
 import React from 'react'
+import trashData from './trashjson.json';
+
 export default function CrowdImageOutput() {
+
+  const cleanliness = trashData.num;
+
   return (
     <>
     <Center>
@@ -74,7 +79,7 @@ export default function CrowdImageOutput() {
             Trash Detection Output
           </Text>
           <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            Uncleanliness Percentage : 
+            Uncleanliness Percentage : {cleanliness} 
           </Heading>
           <Stack direction={'row'} align={'center'}>
           </Stack>

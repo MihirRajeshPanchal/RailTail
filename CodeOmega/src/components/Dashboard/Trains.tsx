@@ -227,7 +227,7 @@ export default function Trains() {
       <Modal isOpen={isFinalPopupOpen} onClose={closePopup}>
         <ModalContent>
             <ModalHeader maxW={64} mx="auto" textAlign="center">
-                Boogie Number: {selectedBoogieNumber}
+                Overall Report 
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
