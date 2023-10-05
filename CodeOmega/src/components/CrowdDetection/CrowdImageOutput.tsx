@@ -11,7 +11,11 @@ import {
 } from '@chakra-ui/react'
 
 import photo from './crowd_prediction.jpg'
+import crowdData from './crowdjson.json';
 export default function CrowdImageOutput() {
+
+  const numberOfHeads = crowdData.num;
+
   return (
     <>
 
@@ -74,7 +78,7 @@ export default function CrowdImageOutput() {
             Crowd Detection Output
           </Text>
           <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
-            Number of Heads
+            Number of Heads : {numberOfHeads}
           </Heading>
           <Stack direction={'row'} align={'center'}>
           </Stack>
