@@ -89,7 +89,7 @@ def apply_machine_learning_model(model_path,frame):
     cleanliness_percentage = calculate_cleanliness_percentage(saved_data,width,height)
     print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     proc_frame=results[0].plot()
-    return proc_frame,t,cleanliness_percentage
+    return proc_frame, cleanliness_percentage
 
 
 
@@ -515,7 +515,7 @@ def garbage_detector_video():
             if success:
                 # frame=cv2.resize(frame,(320,320))
                 cv2.imwrite('frame.jpg',frame)
-                ann_frame, t, clean_per = apply_machine_learning_model('garbage_detector_1.pt','frame.jpg', t = t) 
+                ann_frame, clean_per = apply_machine_learning_model('garbage_detector_1.pt','frame.jpg') 
                 cv2.imwrite('trash_frames/'+str(cnt)+'.jpg',ann_frame)
                 output_video.write(ann_frame)
                 cnt+=1
