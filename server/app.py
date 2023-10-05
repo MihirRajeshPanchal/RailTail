@@ -105,19 +105,16 @@ def generate_video():
         success, frame = screen_capture.read()
         if not success:
             break
-
-        # Here, you can apply your machine learning model to process each frame
-        # Replace the following line with your model processing logic
         processed_frame, cleanliness = apply_machine_learning_model(model,frame)
 
         # Encode the processed frame as JPEG
-    #     _, buffer = cv2.imencode('.jpg', processed_frame)
-    #     frame_bytes = buffer.tobytes()
+        _, buffer = cv2.imencode('.jpg', processed_frame)
+        frame_bytes = buffer.tobytes()
 
-    #     yield (b'--frame\r\n'
-    #            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        yield (b'--frame\r/\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-    # screen_capture.release()
+    screen_capture.release()
     cv2.destroyAllWindows()
 
 class CrowdSchema:
@@ -644,7 +641,7 @@ def garbage_detector_video():
             }
         complaints_collection = MongoDB('complaints')
         result = complaints_collection.insert_one(complaint)
-    return {{"message": "success"}}
+    return {"message": "success"}
 
 @app.route("/upload-threat-image", methods=['POST'])
 def threat_detector_image():
@@ -654,7 +651,7 @@ def threat_detector_image():
     rf = Roboflow(api_key=ROBOFLOW_API_KEY)
     project = rf.workspace().project("fire-smoke-detection-eozii")
     model = project.version(1).model
-    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/ThreatDetection/threat_prediction.jpg')
+    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/threat_prediction.jpg')
     response = {"image": "success"}
     print("Response",response)
     return jsonify(response)
@@ -677,12 +674,12 @@ def threat_detector_video():
         if not success:
             break
         
-        if c1 % 10 == 0:
+        if c1 % 20 == 0:
             print("Frame:", c1)
             resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
-            cv2.imwrite('threat_frames/'+str(cnt)+'.jpg',resized_frame)
+            cv2.imwrite('crowd_frames/'+str(cnt)+'.jpg',resized_frame)
             # success = cv2.imwrite(output_path, resized_frame)
-            model.predict('threat_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('threat_frames/'+str(cnt)+'.jpg')    
+            model.predict('crowd_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crowd_frames/'+str(cnt)+'.jpg')    
             cnt += 1
             c1+=1
         else:
@@ -691,7 +688,7 @@ def threat_detector_video():
     print("Now make video!!")
     img_array = []
     file_list=[]
-    for file_n in glob.glob('threat_frames/*jpg'):
+    for file_n in glob.glob('crowd_frames/*jpg'):
         print(file_n)
         file_n = int(file_n.split('\\')[1].split('.')[0])
         file_list.append(file_n)
@@ -699,7 +696,7 @@ def threat_detector_video():
     file_list.sort(key=int)
     print("file list:-",file_list)
     for filename in file_list:
-        img = cv2.imread('threat_frames/'+str(filename)+'.jpg')
+        img = cv2.imread('crowd_frames/'+str(filename)+'.jpg')
         height, width, layers = img.shape
         size = (width, height)
         img_array.append(img)
