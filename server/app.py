@@ -595,9 +595,9 @@ def threat_detector_video():
         if c1 % 20 == 0:
             print("Frame:", c1)
             resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
-            cv2.imwrite('crowd_frames/'+str(cnt)+'.jpg',resized_frame)
+            cv2.imwrite('threat_frames/'+str(cnt)+'.jpg',resized_frame)
             # success = cv2.imwrite(output_path, resized_frame)
-            model.predict('crowd_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crowd_frames/'+str(cnt)+'.jpg')    
+            model.predict('threat_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('threat_frames/'+str(cnt)+'.jpg')    
             cnt += 1
             c1+=1
         else:
@@ -606,7 +606,7 @@ def threat_detector_video():
     print("Now make video!!")
     img_array = []
     file_list=[]
-    for file_n in glob.glob('crowd_frames/*jpg'):
+    for file_n in glob.glob('threat_frames/*jpg'):
         print(file_n)
         file_n = int(file_n.split('\\')[1].split('.')[0])
         file_list.append(file_n)
@@ -614,7 +614,7 @@ def threat_detector_video():
     file_list.sort(key=int)
     print("file list:-",file_list)
     for filename in file_list:
-        img = cv2.imread('crowd_frames/'+str(filename)+'.jpg')
+        img = cv2.imread('threat_frames/'+str(filename)+'.jpg')
         height, width, layers = img.shape
         size = (width, height)
         img_array.append(img)
@@ -815,12 +815,10 @@ def live_video():
 
 
 def crowd_detector_livecam():
-    model_path = 'garbage_detector_1.pt'
-    model = YOLO(model_path)
-
-    # Create a VideoCapture object to capture video from the webcam (0 represents the default camera)
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
     cap = cv2.VideoCapture(0)
-
     # Initialize the video writer to serve the frames as a video stream
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
