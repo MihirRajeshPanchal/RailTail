@@ -485,6 +485,7 @@ def apply_machine_learning_model(model_path,frame,t):
     model = YOLO(model_path)
     results=model(frame)
     l=[]
+    w,h= cv2.imread(frame).shape
     for result in results:
         l.append(result.tojson())
 
@@ -500,7 +501,7 @@ def apply_machine_learning_model(model_path,frame,t):
         saved_data = json.load(json_file)
         print(saved_data)        #HATIM CHECK YEH JSON KO SHAYD SAVE kar RAHA HAI
 
-    def calculate_cleanliness_percentage(data):
+    def calculate_cleanliness_percentage(data,w,h):
         total_objects = len(data)  # Removed ['predictions'] as it's not a dictionary anymore
         trash_count = 0
 
@@ -515,8 +516,8 @@ def apply_machine_learning_model(model_path,frame,t):
             if confidence > 70:
                 t=True
             # Calculate dynamic object size based on position
-            normalized_area = ((x2 - x1) * (y2 - y1)) / (320 * 320)  # Assuming frame size is 1920x1080
-            trash_count += normalized_area  # Subtract normalized area from 1
+            normalized_area = ((x2 - x1) * (y2 - y1)) / (w*h)  # Assuming frame size is 1920x1080
+            trash_count +=1- normalized_area  # Subtract normalized area from 1
 
         # Calculate cleanliness percentage
         if total_objects>0 :
@@ -525,29 +526,52 @@ def apply_machine_learning_model(model_path,frame,t):
         else:
             return 0
     # Example usage with saved_data
-    cleanliness_percentage = calculate_cleanliness_percentage(saved_data)
+    cleanliness_percentage = calculate_cleanliness_percentage(saved_data,w,h)
     print(f'Garbage Percentage: {cleanliness_percentage:.2f}%')
     # print(cleanliness_percentage)
     proc_frame=results[0].plot()
     return proc_frame,t,cleanliness_percentage
 
-@app.route("/upload-garbage-image",methods=['GET'])
+@app.route("/upload-garbage-image",methods=['POST'])
 def garbage_detector_image():
-    image_file = 'garbage.jpg'
+    image_file = request.files['file']
+    file_path = os.path.join('img', image_file.filename)
+    image_file.save(file_path)
     model_path = 'garbage_detector_1.pt'
     model = YOLO(model_path)
-    results = model(image_file, stream=True, save=True)
-    proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=image_file)
+    t=False
+    results = model(file_path, stream=True, save=True)
+    proc_frame, t, cleanliness_percentage = apply_machine_learning_model(model_path=model_path, frame=file_path,t=t)
+    output_path = '../CodeOmega/src/components/TrashDetection/output_image.jpg'  # Specify the path where you want to save the image
+    success = cv2.imwrite(output_path, proc_frame)
+    print("Succes:- ",success)
+    response = {"image": "success"}
+    print("Response",response)
+    if t:
+        complaint = {
+                "type": "cleanliness",
+                "station": "Dadar",
+                "platform": "2",
+                "description": "Urgent assistance needed in Cleanliness",
+            }
+        complaints_collection = MongoDB('complaints')
+        result = complaints_collection.insert_one(complaint)
+    return jsonify(response)
 
 @app.route("/upload-garbage-video",methods=['POST'])
 def garbage_detector_video():
     video_file = request.files['file']
-    print("Tpe of file",type(video_file))
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
     model_path = 'garbage_detector_1.pt'
     cnt=0
     c1=0
+<<<<<<< HEAD
     cap = cv2.VideoCapture(video_file)
     
+=======
+    cap = cv2.VideoCapture(file_path)
+>>>>>>> aee7e77cac34894a5a7e92f250fe684e20cf8e74
     t=False
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
@@ -560,14 +584,19 @@ def garbage_detector_video():
             print(c1)
             if success:
                 # frame=cv2.resize(frame,(320,320))
+<<<<<<< HEAD
                 cv2.imwrite('frame.jpg',frame)
                 ann_frame, clean_per = apply_machine_learning_model('server\garbage_detector_1.pt','frame.jpg') 
                 cv2.imshow("YOLOv8 Inference", ann_frame)
+=======
+                ann_frame,t,score = apply_machine_learning_model(model_path=model_path,frame=frame,t=t)
+                # cv2.imshow("YOLOv8 Inference", ann_frame)
+>>>>>>> aee7e77cac34894a5a7e92f250fe684e20cf8e74
                 # cv2.imwrite('frames/'+str(cnt)+'.jpg',ann_frame)
                 output_video.write(ann_frame)
                 cnt+=1
-                if cv2.waitKey(1) & 0xFF == ord("q"):
-                    break
+                # if cv2.waitKey(1) & 0xFF == ord("q"):
+                #     break
             else:
                 break
         else:
@@ -602,51 +631,9 @@ def threat_detector_image():
     print("Response",response)
     return jsonify(response)
 
-@app.route("/upload-threat-video", methods=['GET'])
+@app.route("/upload-threat-video", methods=['POST'])
 def threat_detector_video():
-    video_file = "garbage4.mp4"
-    cnt = 0
-    c1 = 0
-    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
-    project = rf.workspace().project("fire-smoke-detection-eozii")
-    model = project.version(1).model
-    cap = cv2.VideoCapture(video_file)
-    
-    while cap.isOpened():
-        success, frame = cap.read()
-        if not success:
-            # If success is False, there are no more frames to read, so break out of the loop
-            break
-        
-        if c1 % 20 == 0:
-            print("Frame:", c1)
-            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
-            jpeg_quality = 95
-            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
-
-            if success:
-                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
-                cnt += 1
-        c1 += 1
-    cap.release()
-    return "done"
-
-@app.route("/upload-crowd-image", methods=['POST'])
-def crowd_detector_image():
-    image_file = request.files['file']
-    file_path = os.path.join('img', image_file.filename)
-    image_file.save(file_path)
-    # Check if the file has a name
-    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
-    project = rf.workspace().project("crowd_count_v2")
-    model = project.version(2).model
-    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
-    response = {"image": "success"}
-    print("Response",response)
-    return jsonify(response)
-
-@app.route("/upload-crowd-video", methods=['POST'])
-def crowd_detector_video():
+    print("Now make frames!!")
     video_file = request.files['file']
     file_path = os.path.join('video', video_file.filename)
     video_file.save(file_path)
@@ -665,13 +652,162 @@ def crowd_detector_video():
         if c1 % 20 == 0:
             print("Frame:", c1)
             resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
-            jpeg_quality = 95
-            success, jpeg_image = cv2.imencode('.jpg', resized_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+            cv2.imwrite('crowd_frames/'+str(cnt)+'.jpg',resized_frame)
+            # success = cv2.imwrite(output_path, resized_frame)
+            model.predict('crowd_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crowd_frames/'+str(cnt)+'.jpg')    
+            cnt += 1
+            c1+=1
+        else:
+            c1 +=1
+    
+    print("Now make video!!")
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('crowd_frames/*jpg'):
+        print(file_n)
+        file_n = int(file_n.split('\\')[1].split('.')[0])
+        file_list.append(file_n)
 
-            if success:
-                print(model.predict(jpeg_image, confidence=40, overlap=30).json())
-                cnt += 1
-        c1 += 1
+    file_list.sort(key=int)
+    print("file list:-",file_list)
+    for filename in file_list:
+        img = cv2.imread('crowd_frames/'+str(filename)+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter("../CodeOmega/src/components/ThreatDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    cap.release()
+    return "done"
+
+@app.route("/upload-crowd-image", methods=['POST'])
+def crowd_detector_image():
+    image_file = request.files['file']
+    file_path = os.path.join('img', image_file.filename)
+    image_file.save(file_path)
+    # Check if the file has a name
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    results = model.predict(file_path, confidence=40, overlap=30).json()
+    model.predict(file_path, confidence=40, overlap=30).save('../CodeOmega/src/components/CrowdDetection/crowd_prediction.jpg')
+    response = {"Number of People": len(results['predictions'])}
+    with open('../CodeOmega/src/components/CrowdDetection/crowdjson.json', 'w') as json_file:
+        json.dump({"num":len(results['predictions'])}, json_file)
+
+    print("Response",response)
+    return jsonify(response)
+
+@app.route("/upload-crowd-video", methods=['POST'])
+def crowd_detector_video():
+    print("Now make frames!!")
+    video_file = request.files['file']
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
+    cnt = 0
+    c1 = 0
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("crowd_count_v2")
+    model = project.version(2).model
+    cap = cv2.VideoCapture(file_path)
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            break
+        
+        if c1 % 10 == 0:
+            print("Frame:", c1)
+            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
+            cv2.imwrite('crowd_frames/'+str(cnt)+'.jpg',resized_frame)
+            # success = cv2.imwrite(output_path, resized_frame)
+            model.predict('crowd_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crowd_frames/'+str(cnt)+'.jpg')    
+            cnt += 1
+            c1+=1
+        else:
+            c1 +=1
+    
+    print("Now make video!!")
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('crowd_frames/*jpg'):
+        print(file_n)
+        file_n = int(file_n.split('\\')[1].split('.')[0])
+        file_list.append(file_n)
+
+    file_list.sort(key=int)
+    print("file list:-",file_list)
+    for filename in file_list:
+        img = cv2.imread('crowd_frames/'+str(filename)+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter("../CodeOmega/src/components/CrowdDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    cap.release()
+    return "done"
+
+@app.route("/upload-crime-video", methods=['POST'])
+def crime_detector_video():
+    print("Now make frames!!")
+    video_file = request.files['file']
+    file_path = os.path.join('video', video_file.filename)
+    video_file.save(file_path)
+    cnt = 0
+    c1 = 0
+    rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+    project = rf.workspace().project("dbss_smoking")
+    model = project.version(1).model
+    cap = cv2.VideoCapture(file_path)
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            break
+        
+        if c1 % 10 == 0:
+            print("Frame:", c1)
+            resized_frame = cv2.resize(frame, (320, 320))  # Resize the frame to a smaller size
+            cv2.imwrite('crime_frames/'+str(cnt)+'.jpg',resized_frame)
+            # success = cv2.imwrite(output_path, resized_frame)
+            model.predict('crime_frames/'+str(cnt)+'.jpg', confidence=40, overlap=30).save('crime_frames/'+str(cnt)+'.jpg')    
+            cnt += 1
+            c1+=1
+        else:
+            c1 +=1
+    
+    print("Now make video!!")
+    img_array = []
+    file_list=[]
+    for file_n in glob.glob('crime_frames/*jpg'):
+        print(file_n)
+        file_n = int(file_n.split('\\')[1].split('.')[0])
+        file_list.append(file_n)
+
+    file_list.sort(key=int)
+    print("file list:-",file_list)
+    for filename in file_list:
+        img = cv2.imread('crime_frames/'+str(filename)+'.jpg')
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+        print('appending',filename)
+    print("BEFORE OUT")
+    out = cv2.VideoWriter("../CodeOmega/src/components/CrimeDetection/output.avi", cv2.VideoWriter_fourcc(*'MPEG'), 15, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
     cap.release()
     return "done"
 

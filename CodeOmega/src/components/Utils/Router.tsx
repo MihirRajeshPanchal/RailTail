@@ -24,8 +24,11 @@ import ContactUs from '../ContactUs/ContactUs'
 
 //admin
 import CrowdDetection from '../CrowdDetection/CrowdDetection'
+import CrowdImageOutput from '../CrowdDetection/CrowdImageOutput'
 import TrashDetection from '../TrashDetection/TrashDetection';
+import TrashImageOutput from '../TrashDetection/TrashImageOutput';
 import CrimeDetection from '../CrimeDetection/CrimeDetection';
+import CrimeImageOutput from '../CrimeDetection/CrimeImageOutput'
 import TCAllocation from '../TCAllocation/TCAllocation'
 import StaffAllocation from '../StaffAllocation/StaffAllocation';
 import PoliceAllocation from '../PoliceAllocation/PoliceAllocation';
@@ -49,8 +52,11 @@ const RoutesConfig = () => {
 
       {/* admin  */}
       <Route path="/crowddetection" element={<CrowdDetection/>} />
+      <Route path="/crowdimageoutput" element={<CrowdImageOutput/>} />
       <Route path="/trashdetection" element={<TrashDetection/>} />
+      <Route path="/trashimageoutput" element={<TrashImageOutput/>} />
       <Route path="/crimedetection" element={<CrimeDetection/>} />
+      <Route path="/crimeimageoutput" element={<CrimeImageOutput/>} />
       <Route path="/tcallocation" element={<TCAllocation/>} />
       <Route path="/staffallocation" element={<StaffAllocation/>} />
       <Route path="/policeallocation" element={<PoliceAllocation/>} />

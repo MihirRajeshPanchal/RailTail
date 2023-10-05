@@ -15,49 +15,83 @@ import { Link } from 'react-router-dom';
 import video from "../../assets/video.jpeg"
 import image from "../../assets/image.png"
 import live from "../../assets/live.png"
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import  Loader  from '../Utils/Loader'
+import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
 export default function CrimeDetection() {
-  const fileInputRef = useRef(null);
+  const fileInputImageRef = useRef(null);
+  const fileInputVideoRef = useRef(null);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleComputeImageClick = () => {
     // Trigger the file input when the "Compute" button is clicked
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    if (fileInputImageRef.current) {
+      fileInputImageRef.current.click();
     }
   };
 
   const handleComputeVideoClick = () => {
     // Trigger the file input when the "Compute" button is clicked
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    if (fileInputVideoRef.current) {
+      fileInputVideoRef.current.click();
     }
   };
 
   const handleImageFileChange = (event) => {
     const selectedFile = event.target.files[0]; // Get the selected file
 
-    if (selectedFile) {
-      // Log the file information
-      console.log('Selected Video File:', selectedFile);
-      // You can also perform further actions with the selected file here
-    }
+    setIsLoading(true);
+    const formData = new FormData();
+      formData.append('file', selectedFile);
+      console.log(selectedFile)
+      // Make a POST request to your server API to process the image
+      fetch('http://127.0.0.1:5000/upload-crime-image', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Response from server:', data);
+          // Handle the response data as needed
+          setIsLoading(false); // Hide the loader
+          navigate('/crimeimageoutput');
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          // Handle errors
+        });
+        setIsLoading(false);
   };
 
   const handleVideoFileChange = (event) => {
     const selectedFile = event.target.files[0]; // Get the selected file
 
-    if (selectedFile) {
-      // Log the file information
-      console.log('Selected Video File:', selectedFile);
-      // You can also perform further actions with the selected file here
-    }
+    const formData = new FormData();
+      formData.append('file', selectedFile);
+      console.log(selectedFile)
+      // Make a POST request to your server API to process the image
+      fetch('http://127.0.0.1:5000/upload-crime-video', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Response from server:', data);
+          // Handle the response data as needed
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          // Handle errors
+        });
   };
 
 
   return (
     <>
+    {isLoading && <Loader />}
     <Center>
         <Heading
           px={{ base: 6, md: 150 }}
@@ -131,7 +165,7 @@ export default function CrimeDetection() {
           <input
             type="file"
             accept="video/*" // Specify the accepted file types
-            ref={fileInputRef}
+            ref={fileInputVideoRef}
             onChange={handleVideoFileChange} 
             style={{ display: 'none' }}
           />
@@ -196,7 +230,7 @@ export default function CrimeDetection() {
           <input
             type="file"
             accept="image/*" // Specify the accepted file types
-            ref={fileInputRef}
+            ref={fileInputImageRef}
             onChange={handleImageFileChange} 
             style={{ display: 'none' }}
           />
