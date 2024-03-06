@@ -1,0 +1,406 @@
+repo_name: MihirRajeshPanchal/CodeOmega_Codeissance
+report_id: adaeeee6537946160530438a2179956c
+version: 0.1
+repo_type: Public
+timestamp: '2024-03-05T14:08:34+00:00'
+requested_by: MihirRajeshPanchal
+provider: github
+branch: main
+detected_tools_count: 30
+tools:
+- name: CSS 3
+  description: The latest evolution of the Cascading Style Sheets language
+  website_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS3
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/6727/css.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance
+  detection_source: Repo Metadata
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance
+  detection_source: Repo Metadata
+- name: Python
+  description: A clear and powerful object-oriented programming language, comparable
+    to Perl, Ruby, Scheme, or Java.
+  website_url: https://www.python.org
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance
+  detection_source: Repo Metadata
+- name: TypeScript
+  description: A superset of JavaScript that compiles to clean JavaScript output
+  website_url: http://www.typescriptlang.org
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1612/bynNY5dJ.jpg
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance
+  detection_source: Repo Metadata
+- name: React
+  description: A JavaScript library for building user interfaces
+  website_url: https://reactjs.org/
+  version: 18.2.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Javascript UI Libraries
+  image_url: https://img.stackshare.io/service/1020/OYIaJ1KK.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: React Router
+  description: A complete routing solution for React.js
+  website_url: https://github.com/rackt/react-router
+  version: 6.16.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: JavaScript Framework Components
+  image_url: https://img.stackshare.io/service/3350/8261421.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: MongoDB
+  description: The database for giant ideas
+  website_url: http://www.mongodb.com/
+  open_source: true
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Databases
+  image_url: https://img.stackshare.io/service/1030/leaf-360x360.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/requirements.txt
+  detection_source: server/requirements.txt
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-04 07:20:00.000000000 Z
+- name: ESLint
+  description: The fully pluggable JavaScript code quality tool
+  website_url: http://eslint.org/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Code Review
+  image_url: https://img.stackshare.io/service/3337/Q4L7Jncy.jpg
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-03 10:50:24.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance
+  detection_source: Repo Metadata
+- name: PyPI
+  description: A repository of software for the Python programming language
+  website_url: https://pypi.org/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Hosted Package Repository
+  image_url: https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/requirements.txt
+  detection_source: server/requirements.txt
+  last_updated_by: Hatim
+  last_updated_on: 2023-10-03 18:29:19.000000000 Z
+- name: Vite
+  description: Native-ESM powered web dev build tool
+  website_url: https://vitejs.dev/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: JS Build Tools / JS Task Runners
+  image_url: https://img.stackshare.io/service/21547/default_1aeac791cde11ff66cc0b20dcc6144eeb185c905.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-03 10:50:24.000000000 Z
+- name: npm
+  description: The package manager for JavaScript.
+  website_url: https://www.npmjs.com/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Front End Package Manager
+  image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-03 10:50:24.000000000 Z
+- name: OpenCV
+  description: Open Source Computer Vision Library
+  website_url: http://opencv.org/
+  open_source: true
+  hosted_saas: false
+  category: Assets and Media
+  sub_category: Image Processing and Management
+  image_url: https://img.stackshare.io/service/1293/opencv-logo-64x64.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/requirements.txt
+  detection_source: server/requirements.txt
+  last_updated_by: Hatim
+  last_updated_on: 2023-10-03 18:29:19.000000000 Z
+- name: Jupyter
+  description: Multi-language interactive computing environments.
+  website_url: http://jupyter.org
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Application Utilities
+  sub_category: Data Science Notebooks
+  image_url: https://img.stackshare.io/service/4190/fGBUdNf__400x400.jpg
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance
+  detection_source: Repo Metadata
+- name: three.js
+  description: A JavaScript 3D library
+  website_url: https://threejs.org/
+  version: 0.150.1
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Game Development
+  image_url: https://img.stackshare.io/service/5883/preview.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-03 10:50:24.000000000 Z
+- name: "@emotion/styled"
+  description: Styled API for emotion
+  package_url: https://www.npmjs.com/@emotion/styled
+  version: 11.11.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16702/default_4b738bf1758d38dddd276589bbea47fca5a990df.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-03 10:50:24.000000000 Z
+- name: "@types/react"
+  description: TypeScript definitions for React
+  package_url: https://www.npmjs.com/@types/react
+  version: 18.2.15
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15894/default_1d65e37e65b7f80761374f0202776043277d505d.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: "@types/react-dom"
+  description: TypeScript definitions for React
+  package_url: https://www.npmjs.com/@types/react-dom
+  version: 18.2.7
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15946/default_54b691c123fc8979741e800e4dcd3936c0f3b246.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: eslint-plugin-react
+  description: React specific linting rules for ESLint
+  package_url: https://www.npmjs.com/eslint-plugin-react
+  version: 7.32.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15817/default_14fd11531839d935f920b6d55bd6f3528c890ad7.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: eslint-plugin-react-hooks
+  description: ESLint rules for React Hooks
+  package_url: https://www.npmjs.com/eslint-plugin-react-hooks
+  version: 4.6.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16149/default_1f3a2fc7d882e29a43394ecdf491b8989ea3f0fa.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: react-dom
+  description: React package for working with the DOM
+  package_url: https://www.npmjs.com/react-dom
+  version: 18.2.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/15808/default_14fd11531839d935f920b6d55bd6f3528c890ad7.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: react-icons
+  description: SVG React icons of popular icon packs using ES6 imports
+  package_url: https://www.npmjs.com/react-icons
+  version: 4.11.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16909/default_7b9968788548874538c601457e8dcd9c74bd2051.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: react-router-dom
+  description: DOM bindings for React Router
+  package_url: https://www.npmjs.com/react-router-dom
+  version: 6.16.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16025/default_e25d1fbb04a118c79fb444294461417342bd03bf.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-05 03:16:02.000000000 Z
+- name: three
+  description: JavaScript 3D library
+  package_url: https://www.npmjs.com/three
+  version: 0.150.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: npm Packages
+  image_url: https://img.stackshare.io/package/16653/default_cc0f40a737548852d2ee666c132c258c9a2c0cad.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-03 10:50:24.000000000 Z
+- name: vite
+  description: Native-ESM powered web dev build tool
+  package_url: https://www.npmjs.com/vite
+  version: 4.4.5
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/package/npm/image.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/CodeOmega/package.json
+  detection_source: CodeOmega/package.json
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-03 10:50:24.000000000 Z
+  vulnerabilities:
+  - name: Vite dev server option `server.fs.deny` can be bypassed when hosted on case-insensitive
+      filesystem
+    cve_id: CVE-2024-23331
+    cve_url: https://github.com/advisories/GHSA-c24v-8rfc-w8vw
+    detected_date: Jan 20
+    severity: high
+    first_patched: 4.5.2
+  - name: Vite XSS vulnerability in `server.transformIndexHtml` via URL payload
+    cve_id: CVE-2023-49293
+    cve_url: https://github.com/advisories/GHSA-92r3-m2mg-pj97
+    detected_date: Dec 6
+    severity: moderate
+    first_patched: 4.4.12
+- name: moviepy
+  description: Video editing with Python
+  package_url: https://pypi.org/project/moviepy
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20492/default_7e42545a0162c6dd67f6adc715d6eabd6d2d2736.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/requirements.txt
+  detection_source: server/requirements.txt
+  last_updated_by: Hatim
+  last_updated_on: 2023-10-05 02:05:46.000000000 Z
+- name: opencv-python
+  description: Wrapper package for OpenCV python bindings
+  package_url: https://pypi.org/project/opencv-python
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/requirements.txt
+  detection_source: server/requirements.txt
+  last_updated_by: Hatim
+  last_updated_on: 2023-10-04 09:43:56.000000000 Z
+- name: pymongo
+  description: Python driver for MongoDB &lt;http://www.mongodb.org&gt;
+  package_url: https://pypi.org/project/pymongo
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19865/default_7975a21f3bf03129dc3bc4168cf7cb7ee2cc14cc.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/requirements.txt
+  detection_source: server/requirements.txt
+  last_updated_by: MihirRajeshPanchal
+  last_updated_on: 2023-10-04 07:20:00.000000000 Z
+- name: python-dotenv
+  description: Add .env support to your django/flask apps in development and deployments
+  package_url: https://pypi.org/project/python-dotenv
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20095/default_3141eabecdd8efa55de73a33c43f2ac0d5bbf954.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/requirements.txt
+  detection_source: server/requirements.txt
+  last_updated_by: Hatim
+  last_updated_on: 2023-10-04 09:43:56.000000000 Z
+- name: finiteautomata/bertweet-base-sentiment-analysis
+  description: Finiteautomata/bertweet base sentiment analysis
+  package_url: https://huggingface.co/spaces/finiteautomata/bertweet-base-sentiment-analysis
+  open_source: false
+  hosted_saas: false
+  category: Libraries
+  sub_category: AI Hub
+  image_url: https://img.stackshare.io/package/hugging-face-hub/image.png
+  detection_source_url: https://github.com/MihirRajeshPanchal/CodeOmega_Codeissance/blob/main/server/app.py
+  detection_source: server/app.py
+  last_updated_by: Hatim
+  last_updated_on: 2023-10-05 04:56:59.000000000 Z
